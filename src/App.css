@@ -28,6 +28,11 @@
   color: #61dafb;
 }
 
+.ant-btn.ant-btn-primary.baemin__button {
+  border-color: #3ab6c9;
+  background: #3ac5c9;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

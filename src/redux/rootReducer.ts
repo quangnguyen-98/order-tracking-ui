@@ -1,10 +1,20 @@
-import { combineReducers } from '@reduxjs/toolkit'
+import { combineReducers } from '@reduxjs/toolkit';
+import { reducer as form } from 'redux-form';
+import dishesReducer from '../containers/Merchant/reducer';
+import dishesModalReducer from '../components/MerChant/DishesModal/reducer';
 
-import merchantReducer from '../containers/Merchant/reducer';
+import orderReducer from '../containers/User/reducer';
+import orderModalReducer from '../components/User/OrderModal/reducer';
+
+
 
 const rootReducer = combineReducers({
-  merchantReducer: merchantReducer,
-})
-
+  form,
+  dishesReducer,
+  dishesModalReducer,
+  orderReducer,
+  orderModalReducer
+  
+});
 
 export default rootReducer;

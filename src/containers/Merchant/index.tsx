@@ -1,75 +1,88 @@
-import React, { Fragment, FC, useEffect } from 'react';
-import { Button, Layout, Col, Row, Breadcrumb } from 'antd';
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { RootState } from '../../redux/store';
-import Container from '../../sharedComponents/Container';
-import { fetchProducts } from './reducer';
-import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { FC, useEffect } from 'react';
+import { Col, Divider, Row, Layout } from "antd";
+import { Container } from 'reactstrap';
 
+
+import { RootState } from '../../redux/store';
+import { updatePagination, fetchDishes, resetData, updateSort } from './reducer';
+import { useAppDispatch, useAppSelector } from '../../redux/hook';
+import { openDishesModalEdit } from '../../components/MerChant/DishesModal/reducer';
+import { Dishes } from '../../types/Merchant';
+
+import BreadCrumb from '../../sharedComponents/BreadCrumb';
+import Pagination from '../../sharedComponents/Pagination';
+import DishesTable from '../../components/MerChant/DishesTable';
+import DishesModal from '../../components/MerChant/DishesModal';
 
 const MerchantContainer: FC = () => {
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const navigatePage = (pageName: string) => {
-        navigate(pageName);
-    }
+	const dispatch = useAppDispatch();
 
-    const { products } = useAppSelector((state: RootState) => state.merchantReducer);
-    // const { products } = useSelector((state: RootState) => state.merchantReducer);
+	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishesReducer);
+	const { isShow } = useAppSelector((state: RootState) => state.dishesModalReducer);
+	const { page, pageSize, totalItem } = pagination;
 
-    useEffect(() => {
-        dispatch(fetchProducts());
-    }, []);
+	const onChangePage = (page: number) => {
+		dispatch(updatePagination({ ...pagination, page }));
+	};
 
-    return (
-        <Layout className='container'>
-            <Container>
-                <Row >
-                    <Col span={22}>
-                        <Breadcrumb>
-                            <Breadcrumb.Item>BAEMIN ORDER TRACKING SERVICE</Breadcrumb.Item>
-                            <Breadcrumb.Item>Merchant Page</Breadcrumb.Item>
-                        </Breadcrumb>
-                    </Col>
-                    <Col span={2}>
-                        <Button type="primary" onClick={() => { navigatePage("/") }}>Back to Dashboard</Button>
-                    </Col>
-                </Row>
+	const onChangePageSize = (pageSize: number) => {
+		dispatch(updatePagination({ ...pagination, page: 0, pageSize }));
+	};
 
-                {products.map(item => {
-                    return (
-                        <>
-                            <Row>
-                                <Col span={4}>
-                                    {item.name}
-                                </Col>
-                                <Col span={4}>
-                                    {item.avatar}
-                                </Col>
-                                <Col span={4}>
-                                    {item.price}
-                                </Col>
-                                <Col span={4}>
-                                    {item.quantity}
-                                </Col>
-                                <Col span={4}>
-                                    {item.id}
-                                </Col>
-                                <Col span={4}>
-                                    {item.createdAt}
-                                </Col>
+	const onOpenDishesModal = (isEdit: boolean, data: Dishes) => {
+		dispatch(openDishesModalEdit({ isEdit, data }));
+	};
 
-                            </Row>
-                            <div>
-                                ====================
-                            </div>
-                        </>
-                    )
-                })}
-            </Container>
+	const onUpdateSort = (value: any) => {
+		dispatch(updateSort(value));
+	};
 
-        </Layout>
-    );
-}
+	useEffect(() => {
+		return () => {
+			dispatch(resetData());
+		};
+	}, []);
+
+	useEffect(() => {
+		dispatch(fetchDishes({ sort, filter, page, pageSize }));
+	}, [sort, filter, page]);
+
+	return (
+		<Layout className='container'>
+			<Container>
+				<Row className='container__merchant'>
+
+					<Col span={24}>
+						<BreadCrumb path='Merchant' subPath='Dishes'></BreadCrumb>
+
+						<Divider />
+
+						<DishesTable
+							sort={sort}
+							onUpdateSort={onUpdateSort}
+							data={data}
+							loading={loading}
+							onOpenDishesModal={onOpenDishesModal}
+						></DishesTable>
+
+						<Divider />
+
+						<Pagination
+							loading={loading}
+							page={page}
+							pageSize={pageSize}
+							totalItem={totalItem}
+							onChangePage={onChangePage}
+							onChangePageSize={onChangePageSize}
+						/>
+
+					</Col>
+				</Row>
+			</Container>
+			{isShow && (<DishesModal></DishesModal>)}
+
+		</Layout>
+	);
+};
 
 export default MerchantContainer;

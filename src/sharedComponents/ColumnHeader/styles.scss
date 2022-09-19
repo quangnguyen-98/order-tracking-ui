@@ -1,0 +1,12 @@
+.column__header {
+  .column__header--loading {
+    cursor: not-allowed;
+  }
+  .column__header--normal {
+    cursor: pointer;
+  }
+  .sort__icon {
+    float: right;
+    margin-right: 5px;
+  }
+}

@@ -3,12 +3,12 @@ import { notification } from 'antd';
 import { AppThunk } from '../../redux/store';
 import { Pagination } from '../../types/Common';
 import { defaultPageSize } from '../../constants/appConstant';
-import { Dishes, ListDishesResponse } from '../../types/Merchant';
+import { Order, ListOrderResponse } from '../../types/User';
 
-import { getDishes } from '../../api/merchant.api';
+import { getOrders } from '../../api/order.api';
 
-interface DishesState {
-    data: Dishes[];
+interface OrderState {
+    data: Order[];
     pagination: Pagination;
     sort: any,
     filter: any,
@@ -16,11 +16,11 @@ interface DishesState {
     error: string | null;
 };
 
-interface DishesPayload {
-    data: ListDishesResponse;
+interface OrderPayload {
+    data: ListOrderResponse;
 };
 
-const initialState: DishesState = {
+const initialState: OrderState = {
     data: [],
     pagination: {
         page: 0,
@@ -34,8 +34,8 @@ const initialState: DishesState = {
     error: null
 };
 
-const dishesTable = createSlice({
-    name: 'dishesTable',
+const orderTable = createSlice({
+    name: 'orderTable',
     initialState,
     reducers: {
         updatePagination(state, action: PayloadAction<Pagination>) {
@@ -47,12 +47,11 @@ const dishesTable = createSlice({
         updateFilter(state, action: PayloadAction<any>) {
             state.filter = action.payload;
         },
-        getDishesStart(state) {
+        getOrderStart(state) {
             state.loading = true;
             state.error = null;
         },
-        getDishesSuccess(state, action: PayloadAction<DishesPayload>) {
-
+        getOrderSuccess(state, action: PayloadAction<OrderPayload>) {
             const { data } = action.payload;
 
             state.data = data.data;
@@ -60,7 +59,7 @@ const dishesTable = createSlice({
             state.loading = false;
             state.error = null;
         },
-        getDishesFailure(state, action: PayloadAction<string>) {
+        getOrderFailure(state, action: PayloadAction<string>) {
             state.loading = false;
             state.error = action.payload;
         },
@@ -74,20 +73,21 @@ export const {
     updatePagination,
     updateSort,
     updateFilter,
-    getDishesStart,
-    getDishesSuccess,
-    getDishesFailure,
+    getOrderStart,
+    getOrderSuccess,
+    getOrderFailure,
     resetData
-} = dishesTable.actions;
-export default dishesTable.reducer;
+} = orderTable.actions;
 
-export const fetchDishes = (options: any | {}): AppThunk => async dispatch => {
+export default orderTable.reducer;
+
+export const fetchOrder = (options: any | {}): AppThunk => async dispatch => {
     try {
-        dispatch(getDishesStart());
-        const dishesData = await getDishes(options);
-        dispatch(getDishesSuccess({ data: dishesData }));
+        dispatch(getOrderStart());
+        const orderData = await getOrders(options);
+        dispatch(getOrderSuccess({ data: orderData }));
     } catch (err: any) {
         notification.error({ message: err.message });
-        dispatch(getDishesFailure(err));
+        dispatch(getOrderFailure(err));
     }
 };

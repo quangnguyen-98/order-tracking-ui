@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import UserContainer from '../../containers/User';
 
 const UserPage: FC = () => (<UserContainer></UserContainer>)
