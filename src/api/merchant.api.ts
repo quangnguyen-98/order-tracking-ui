@@ -6,7 +6,7 @@ const { MMDDYYYYhhmmA } = DateTimeFormat;
 
 export async function getDishes(body: any) {
 	try {
-		const { data: response } = await axios.post<ListDishesResponse>(`${RootApiEndpoint}/dishes/get-dishes`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.post<ListDishesResponse>(`${RootApiEndpoint}/dishes/get-list-dishes`, { ...body }, DefaulHttpOption);
 		const dishesData = {
 			...response,
 			data: response.data.map(item => ({ ...item, createdDate: moment(item.createdDate).format(MMDDYYYYhhmmA), updatedDate: moment(item.updatedDate).format(MMDDYYYYhhmmA) }))
@@ -20,7 +20,7 @@ export async function getDishes(body: any) {
 
 export async function postDishes(body: any) {
 	try {
-		const { data: response } = await axios.post<DishesModalResponse>(`${RootApiEndpoint}/dishes/`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.post<DishesModalResponse>(`${RootApiEndpoint}/dishes`, { ...body }, DefaulHttpOption);
 		return response;
 	} catch (err: any) {
 		throw err;
@@ -30,7 +30,7 @@ export async function postDishes(body: any) {
 
 export async function putDishes(body: any) {
 	try {
-		const { data: response } = await axios.put<DishesModalResponse>(`${RootApiEndpoint}/dishes/`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.put<DishesModalResponse>(`${RootApiEndpoint}/dishes`, { ...body }, DefaulHttpOption);
 		return response;
 	} catch (err: any) {
 		throw err;

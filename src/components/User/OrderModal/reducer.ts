@@ -28,8 +28,19 @@ const initialState: OderModalState = {
     isEdit: false,
     data: {
         _id: undefined,
-        name: undefined,
-        price: undefined,
+        address: undefined,
+        orderName: undefined,
+        merchantAddress: undefined,
+        merchantName: undefined,
+        riderName: undefined,
+        status: 'CREATED',
+        dishes: [
+            {
+                name: 'banh canh',
+                price: 12000
+            }
+        ],
+        totalPrice: undefined,
         createdDate: null,
         updatedDate: null
     },
@@ -54,11 +65,29 @@ const orderModal = createSlice({
         onChangeOrderFormValue(state, action: PayloadAction<updateFormValuePayload>) {
             const { fieldName, value } = action.payload;
             switch (fieldName) {
-                case 'name':
-                    state.data.name = value;
+                case 'address':
+                    state.data.address = value;
                     break;
-                case 'price':
-                    state.data.price = value;
+                case 'merchantAddress':
+                    state.data.merchantAddress = value;
+                    break;
+                case 'merchantName':
+                    state.data.merchantName = value;
+                    break;
+                case 'totalPrice':
+                    state.data.totalPrice = value;
+                    break;
+                case 'dishes':
+                    state.data.dishes = value;
+                    break;
+                case 'orderName':
+                    state.data.orderName = value;
+                    break;
+                case 'status':
+                    state.data.status = value;
+                    break;
+                case 'riderName':
+                    state.data.riderName = value;
                     break;
                 default:
                     break;
@@ -68,7 +97,10 @@ const orderModal = createSlice({
             state.loading = true;
             state.error = null;
         },
-        createUpdateOrderSuccess(state) {
+        createOrderSuccess() {
+            return initialState;
+        },
+        updateOrderSuccess(state) {
             state.loading = false;
             state.error = null;
         },
@@ -87,12 +119,12 @@ export const {
     openOrderModalCreate,
     openOrderModalEdit,
     createUpdateOrderStart,
-    createUpdateOrderSuccess,
+    createOrderSuccess,
+    updateOrderSuccess,
     createUpdateOrderFailure,
     resetData
 } = orderModal.actions;
 export default orderModal.reducer;
-
 
 //Acsync Action
 export const createOrder = (options: any | {}): AppThunk => async (dispatch, getState) => {
@@ -100,15 +132,13 @@ export const createOrder = (options: any | {}): AppThunk => async (dispatch, get
         dispatch(createUpdateOrderStart());
         await postOrders(options);
         notification.success({ message: 'Created order successfully' });
-        dispatch(createUpdateOrderSuccess());
-    } catch (err: any) {
-        console.log('ee', err);
-        notification.error({ message: err.response.data.message || err.message });
-        dispatch(createUpdateOrderFailure(err));
-    }
-    finally {
+        dispatch(createOrderSuccess());
+
         const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
         dispatch(fetchOrder({ sort, filter, page, pageSize }));
+    } catch (err: any) {
+        notification.error({ message: err.response.data.message || err.message });
+        dispatch(createUpdateOrderFailure(err));
     }
 };
 
@@ -116,14 +146,13 @@ export const updateOrder = (options: any | {}): AppThunk => async (dispatch, get
     try {
         dispatch(createUpdateOrderStart());
         await putOrders(options);
-        dispatch(createUpdateOrderSuccess());
+        dispatch(updateOrderSuccess());
         notification.success({ message: 'Updated order successfully' });
+
+        const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
+        dispatch(fetchOrder({ sort, filter, page, pageSize }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
         dispatch(createUpdateOrderFailure(err));
-    }
-    finally {
-        const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
-        dispatch(fetchOrder({ sort, filter, page, pageSize }));
     }
 };

@@ -41,7 +41,7 @@ const MerchantTable = (props: MerchantTableProps) => {
 						<thead>
 							<tr>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Dishes Id'></ColumnHeader>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='name' columnCaption='Dishes name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='name' columnCaption='Dishes Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='price' columnCaption='Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
@@ -57,10 +57,10 @@ const MerchantTable = (props: MerchantTableProps) => {
 											return (
 												<tbody key={item._id}>
 													<tr>
-														<th className="align-middle text-left"><p onClick={() => {
+														<th className=" align-middle text-left"><span style={{ cursor: 'pointer' }} onClick={() => {
 															navigator.clipboard.writeText(item._id!.toString());
-															message.success('Đã lưu vào clipboard !');
-														}}>{item._id} </p></th>
+															message.success('Copied to clipboard !');
+														}}>{item._id} </span></th>
 														<td className="align-middle">{item.name}</td>
 														<td className="align-middle">{formatMoney(item.price!)}</td>
 														<td className="align-middle">{item.createdDate}</td>
@@ -86,12 +86,8 @@ const MerchantTable = (props: MerchantTableProps) => {
 							}
 						</>
 					</Table>
-
-
-
 				</Col>
 			</Row>
-
 			{
 				data.length === 0 && !loading && (
 					<Row justify={'center'} style={{ height: '30%' }}>

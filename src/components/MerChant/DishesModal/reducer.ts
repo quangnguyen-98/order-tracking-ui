@@ -68,7 +68,10 @@ const dishesModal = createSlice({
             state.loading = true;
             state.error = null;
         },
-        createUpdateDishesSuccess(state) {
+        createDishesSuccess() {
+            return initialState;
+        },
+        updateDishesSuccess(state) {
             state.loading = false;
             state.error = null;
         },
@@ -87,7 +90,8 @@ export const {
     openDishesModalCreate,
     openDishesModalEdit,
     createUpdateDishesStart,
-    createUpdateDishesSuccess,
+    createDishesSuccess,
+    updateDishesSuccess,
     createUpdateDishesFailure,
     resetData
 } = dishesModal.actions;
@@ -99,14 +103,13 @@ export const createDishes = (options: any | {}): AppThunk => async (dispatch, ge
         dispatch(createUpdateDishesStart());
         await postDishes(options);
         notification.success({ message: 'Created dishes successfully' });
-        dispatch(createUpdateDishesSuccess());
+        dispatch(createDishesSuccess());
+
+        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
+        dispatch(fetchDishes({ sort, filter, page, pageSize }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
         dispatch(createUpdateDishesFailure(err));
-    }
-    finally {
-        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
-        dispatch(fetchDishes({ sort, filter, page, pageSize }));
     }
 };
 
@@ -114,14 +117,13 @@ export const updateDishes = (options: any | {}): AppThunk => async (dispatch, ge
     try {
         dispatch(createUpdateDishesStart());
         await putDishes(options);
-        dispatch(createUpdateDishesSuccess());
+        dispatch(updateDishesSuccess());
         notification.success({ message: 'Updated dishes successfully' });
+
+        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
+        dispatch(fetchDishes({ sort, filter, page, pageSize }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
         dispatch(createUpdateDishesFailure(err));
-    }
-    finally {
-        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
-        dispatch(fetchDishes({ sort, filter, page, pageSize }));
     }
 };

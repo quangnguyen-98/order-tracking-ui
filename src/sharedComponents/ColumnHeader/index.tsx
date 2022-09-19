@@ -15,8 +15,10 @@ const ColumnHeader = (props: any) => {
   };
 
   const onHandleUpdateSort = (sort: any, columnName: any) => {
-    console.log('sort', sort);
-    console.log('columnName', columnName);
+    if (props.loading) {
+      return;
+    }
+
     let newSort: any = {};
     const keyName = Object.keys(sort)[0];
     if (![undefined, null].includes(sort[keyName]) && (keyName === columnName)) {
@@ -31,7 +33,7 @@ const ColumnHeader = (props: any) => {
   const { sort, loading, columnName, onUpdateSort, columnCaption } = props;
   return (
     <th className={'column__header'}>
-      <div className={`${loading ? 'column__header--loading' : 'column__header--normal'}`} onClick={() => { onHandleUpdateSort(sort, columnName); }}>
+      <div className={`column__header${loading ? '--loading' : '--normal'}`} onClick={() => { onHandleUpdateSort(sort, columnName); }}>
         <span>
           {columnCaption}
         </span>

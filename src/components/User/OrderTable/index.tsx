@@ -1,6 +1,6 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton
+	Button, Col, Empty, message, Row, Skeleton, Tag
 } from "antd";
 import { Table } from 'reactstrap';
 import { useAppDispatch } from '../../../redux/hook';
@@ -21,6 +21,63 @@ interface OrderTableProps {
 const OrderTable = (props: OrderTableProps) => {
 	const { data, loading, onOpenOrderModal, sort, onUpdateSort } = props;
 	const dispatch = useAppDispatch();
+
+	// const getColorTagByStatus = (item: string | null) => {
+	// 	switch (item) {
+	// 		case 'CREATED':
+	// 			return '#fa8c16';
+	// 		case 'ACCEPTED':
+	// 			return '#389e0d';
+	// 		case 'DRIVERASSIGNED':
+	// 			return '#13c2c2';
+	// 		case 'DELIVERING':
+	// 			return '#1d39c4';
+	// 		case 'DONE':
+	// 			return '#389e0d';
+	// 		case 'CANCELED':
+	// 			return '#f5222d';
+	// 		default:
+	// 			return '#fa8c16';
+	// 	}
+	// };
+	const getTagByStatus = (item: string | null) => {
+		let color = '';
+		let displayName = '';
+		switch (item) {
+			case 'CREATED':
+				color = '#fa8c16';
+				displayName = 'Created';
+				break;
+			case 'ACCEPTED':
+				color = '#389e0d';
+				displayName = 'Accepted';
+				break;
+			case 'DRIVERASSIGNED':
+				color = '#13c2c2';
+				displayName = 'Driver Assigned';
+				break;
+			case 'DELIVERING':
+				color = '#1d39c4';
+				displayName = 'Delivering';
+				break;
+			case 'DONE':
+				color = '#389e0d';
+				displayName = 'Done';
+				break;
+			case 'CANCELED':
+				color = '#f5222d';
+				displayName = 'Canceled';
+				break;
+			default:
+				color = '#fa8c16';
+				displayName = 'Canceled';
+				break;
+		}
+
+		return <Tag color={color}>{displayName}</Tag>;
+	};
+
+
 	return (
 		<>
 			<Row>
@@ -38,9 +95,12 @@ const OrderTable = (props: OrderTableProps) => {
 					<Table hover responsive>
 						<thead>
 							<tr>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Dishes Id'></ColumnHeader>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='name' columnCaption='Dishes name'></ColumnHeader>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='price' columnCaption='Price'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Order Id'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='orderName' columnCaption='Order Name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='merchantName' columnCaption='Merchant Name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='riderName' columnCaption='Rider Name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='status' columnCaption='Status'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
 								<ColumnHeader columnCaption='Action'></ColumnHeader>
@@ -56,12 +116,16 @@ const OrderTable = (props: OrderTableProps) => {
 											return (
 												<tbody key={item._id}>
 													<tr>
-														<th className="align-middle text-left"><p onClick={() => {
+														<th className="align-middle text-left"><span style={{ cursor: 'pointer' }} onClick={() => {
 															navigator.clipboard.writeText(item._id!.toString());
-															message.success('Đã lưu vào clipboard !');
-														}}>{item._id} </p></th>
-														<td className="align-middle">{item.name}</td>
-														<td className="align-middle">{formatMoney(item.price!)}</td>
+															message.success('Copied to clipboard !');
+														}}>{item._id} </span></th>
+														<td className="align-middle">{item.orderName}</td>
+														<td className="align-middle">{item.merchantName}</td>
+														<td className="align-middle">{formatMoney(item.totalPrice!)}</td>
+														<td className="align-middle">{item.riderName}</td>
+														{/* <td className="align-middle">{<Tag color={getColorTagByStatus(item.status!)}>{item.status}</Tag>}</td> */}
+														<td className="align-middle">{getTagByStatus(item.status!)}</td>
 														<td className="align-middle">{item.createdDate}</td>
 														<td className="align-middle">{item.updatedDate}</td>
 														<td className="align-middle">
@@ -79,19 +143,14 @@ const OrderTable = (props: OrderTableProps) => {
 								:
 								<tbody>
 									<tr>
-										<th colSpan={6} className="align-middle text-left"><Skeleton active /></th>
+										<th colSpan={9} className="align-middle text-left"><Skeleton active /></th>
 									</tr>
 								</tbody>
 							}
 						</>
 					</Table>
-
-
-
 				</Col>
 			</Row>
-
-
 			{
 				data.length === 0 && !loading && (
 					<Row justify={'center'} style={{ height: '30%' }}>
