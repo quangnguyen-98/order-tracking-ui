@@ -23,7 +23,14 @@ const ColumnHeader = (props: any) => {
     const keyName = Object.keys(sort)[0];
     if (![undefined, null].includes(sort[keyName]) && (keyName === columnName)) {
       newSort = { ...sort };
-      newSort[keyName] = (sort[keyName] === 1 ? -1 : 1);
+      if (![1, -1].includes(sort[keyName])) {
+        newSort[keyName] = 1;
+      }
+      else if (sort[keyName] === 1) {
+        newSort[keyName] = -1;
+      } else if (sort[keyName] === -1) {
+        newSort = {};
+      }
     } else {
       newSort[columnName] = 1;
     }

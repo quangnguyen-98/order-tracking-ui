@@ -22,24 +22,6 @@ const OrderTable = (props: OrderTableProps) => {
 	const { data, loading, onOpenOrderModal, sort, onUpdateSort } = props;
 	const dispatch = useAppDispatch();
 
-	// const getColorTagByStatus = (item: string | null) => {
-	// 	switch (item) {
-	// 		case 'CREATED':
-	// 			return '#fa8c16';
-	// 		case 'ACCEPTED':
-	// 			return '#389e0d';
-	// 		case 'DRIVERASSIGNED':
-	// 			return '#13c2c2';
-	// 		case 'DELIVERING':
-	// 			return '#1d39c4';
-	// 		case 'DONE':
-	// 			return '#389e0d';
-	// 		case 'CANCELED':
-	// 			return '#f5222d';
-	// 		default:
-	// 			return '#fa8c16';
-	// 	}
-	// };
 	const getTagByStatus = (item: string | null) => {
 		let color = '';
 		let displayName = '';
@@ -98,8 +80,8 @@ const OrderTable = (props: OrderTableProps) => {
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Order Id'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='orderName' columnCaption='Order Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='merchantName' columnCaption='Merchant Name'></ColumnHeader>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='riderName' columnCaption='Rider Name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='status' columnCaption='Status'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
@@ -122,9 +104,8 @@ const OrderTable = (props: OrderTableProps) => {
 														}}>{item._id} </span></th>
 														<td className="align-middle">{item.orderName}</td>
 														<td className="align-middle">{item.merchantName}</td>
-														<td className="align-middle">{formatMoney(item.totalPrice!)}</td>
 														<td className="align-middle">{item.riderName}</td>
-														{/* <td className="align-middle">{<Tag color={getColorTagByStatus(item.status!)}>{item.status}</Tag>}</td> */}
+														<td className="align-middle">{formatMoney(item.totalPrice!)}</td>
 														<td className="align-middle">{getTagByStatus(item.status!)}</td>
 														<td className="align-middle">{item.createdDate}</td>
 														<td className="align-middle">{item.updatedDate}</td>

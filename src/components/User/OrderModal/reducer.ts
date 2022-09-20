@@ -1,158 +1,195 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { postOrders, putOrders } from '../../../api/order.api';
+import { getDishes } from '../../../api/merchant.api';
 import { Order } from '../../../types/User';
 import { fetchOrder } from '../../../containers/User/reducer';
 import { AppThunk } from '../../../redux/store';
+import { Dishes, DishesPayload } from '../../../types/Merchant';
 
 interface OderModalState {
-    isShow: boolean;
-    isEdit: boolean;
-    data: Order;
-    loading: boolean;
-    error: string | null;
+	isShow: boolean;
+	isEdit: boolean;
+	data: Order;
+	dishesOptionData: Dishes[];
+	selectedDishes: string | undefined;
+	dishesQuantity: number | undefined;
+	loading: boolean;
+	error: string | null;
 };
 
 export interface OpenModalPayload {
-    isEdit: boolean;
-    data: Order;
+	isEdit: boolean;
+	data: Order;
 };
 
 export interface updateFormValuePayload {
-    fieldName: string;
-    value: any;
+	fieldName: string;
+	value: any;
 };
 
 const initialState: OderModalState = {
-    isShow: false,
-    isEdit: false,
-    data: {
-        _id: undefined,
-        address: undefined,
-        orderName: undefined,
-        merchantAddress: undefined,
-        merchantName: undefined,
-        riderName: undefined,
-        status: 'CREATED',
-        dishes: [
-            {
-                name: 'banh canh',
-                price: 12000
-            }
-        ],
-        totalPrice: undefined,
-        createdDate: null,
-        updatedDate: null
-    },
-    loading: false,
-    error: null
+	isShow: false,
+	isEdit: false,
+	data: {
+		_id: undefined,
+		address: undefined,
+		orderName: undefined,
+		merchantAddress: undefined,
+		merchantName: undefined,
+		riderName: undefined,
+		status: 'CREATED',
+		dishes: [],
+		totalPrice: 0,
+		createdDate: null,
+		updatedDate: null
+	},
+	dishesOptionData: [
+	],
+	selectedDishes: undefined,
+	dishesQuantity: undefined,
+	loading: false,
+	error: null
 };
 
 const orderModal = createSlice({
-    name: 'orderModal',
-    initialState,
-    reducers: {
-        openOrderModalCreate(state) {
-            state.isShow = true;
-            state.isEdit = false;
-        },
-        openOrderModalEdit(state, action: PayloadAction<OpenModalPayload>) {
-            const { isEdit, data } = action.payload;
-            state.isShow = true;
-            state.isEdit = isEdit;
-            state.data = data;
-        },
-        onChangeOrderFormValue(state, action: PayloadAction<updateFormValuePayload>) {
-            const { fieldName, value } = action.payload;
-            switch (fieldName) {
-                case 'address':
-                    state.data.address = value;
-                    break;
-                case 'merchantAddress':
-                    state.data.merchantAddress = value;
-                    break;
-                case 'merchantName':
-                    state.data.merchantName = value;
-                    break;
-                case 'totalPrice':
-                    state.data.totalPrice = value;
-                    break;
-                case 'dishes':
-                    state.data.dishes = value;
-                    break;
-                case 'orderName':
-                    state.data.orderName = value;
-                    break;
-                case 'status':
-                    state.data.status = value;
-                    break;
-                case 'riderName':
-                    state.data.riderName = value;
-                    break;
-                default:
-                    break;
-            }
-        },
-        createUpdateOrderStart(state) {
-            state.loading = true;
-            state.error = null;
-        },
-        createOrderSuccess() {
-            return initialState;
-        },
-        updateOrderSuccess(state) {
-            state.loading = false;
-            state.error = null;
-        },
-        createUpdateOrderFailure(state, action: PayloadAction<string>) {
-            state.loading = false;
-            state.error = action.payload;
-        },
-        resetData() {
-            return initialState;
-        }
-    }
+	name: 'orderModal',
+	initialState,
+	reducers: {
+		getAllDishesSuccess(state, action: PayloadAction<DishesPayload>) {
+			const { data } = action.payload;
+
+			state.dishesOptionData = data.data;
+			state.selectedDishes = data.data[0]._id;
+		},
+		onChangeDishesSelectOption(state, action: PayloadAction<string>) {
+			state.selectedDishes = action.payload;
+		},
+		onChangedishesQuantity(state, action: PayloadAction<number>) {
+			state.dishesQuantity = action.payload;
+		},
+		openOrderModalCreate(state) {
+			state.isShow = true;
+			state.isEdit = false;
+		},
+		openOrderModalEdit(state, action: PayloadAction<OpenModalPayload>) {
+			const { isEdit, data } = action.payload;
+			state.isShow = true;
+			state.isEdit = isEdit;
+			state.data = data;
+		},
+		onChangeOrderFormValue(state, action: PayloadAction<updateFormValuePayload>) {
+			const { fieldName, value } = action.payload;
+			switch (fieldName) {
+				case 'address':
+					state.data.address = value;
+					break;
+				case 'merchantAddress':
+					state.data.merchantAddress = value;
+					break;
+				case 'merchantName':
+					state.data.merchantName = value;
+					break;
+				case 'totalPrice':
+					state.data.totalPrice = Number(value);
+					break;
+				case 'dishes':
+					state.data.dishes = value;
+					state.data.totalPrice = state.data.dishes.reduce((total, currentDishes) => total + (currentDishes.price! * currentDishes.quantity!), 0);
+					break;
+				case 'orderName':
+					state.data.orderName = value;
+					break;
+				case 'status':
+					state.data.status = value;
+					break;
+				case 'riderName':
+					state.data.riderName = value;
+					break;
+				default:
+					break;
+			}
+		},
+		createUpdateOrderStart(state) {
+			state.loading = true;
+			state.error = null;
+		},
+		createOrderSuccess() {
+			return initialState;
+		},
+		updateOrderSuccess(state) {
+			state.loading = false;
+			state.error = null;
+		},
+		createUpdateOrderFailure(state, action: PayloadAction<string>) {
+			state.loading = false;
+			state.error = action.payload;
+		},
+		resetData() {
+			return initialState;
+		}
+	}
 });
 
 export const {
-    onChangeOrderFormValue,
-    openOrderModalCreate,
-    openOrderModalEdit,
-    createUpdateOrderStart,
-    createOrderSuccess,
-    updateOrderSuccess,
-    createUpdateOrderFailure,
-    resetData
+	getAllDishesSuccess,
+	onChangeDishesSelectOption,
+	onChangedishesQuantity,
+	onChangeOrderFormValue,
+	openOrderModalCreate,
+	openOrderModalEdit,
+	createUpdateOrderStart,
+	createOrderSuccess,
+	updateOrderSuccess,
+	createUpdateOrderFailure,
+	resetData
 } = orderModal.actions;
 export default orderModal.reducer;
 
 //Acsync Action
 export const createOrder = (options: any | {}): AppThunk => async (dispatch, getState) => {
-    try {
-        dispatch(createUpdateOrderStart());
-        await postOrders(options);
-        notification.success({ message: 'Created order successfully' });
-        dispatch(createOrderSuccess());
+	try {
+		dispatch(createUpdateOrderStart());
+		await postOrders(options);
+		notification.success({ message: 'Created order successfully' });
+		dispatch(createOrderSuccess());
 
-        const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
-        dispatch(fetchOrder({ sort, filter, page, pageSize }));
-    } catch (err: any) {
-        notification.error({ message: err.response.data.message || err.message });
-        dispatch(createUpdateOrderFailure(err));
-    }
+		const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
+		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+	} catch (err: any) {
+		notification.error({ message: err.response.data.message || err.message });
+		dispatch(createUpdateOrderFailure(err));
+	}
 };
 
 export const updateOrder = (options: any | {}): AppThunk => async (dispatch, getState) => {
-    try {
-        dispatch(createUpdateOrderStart());
-        await putOrders(options);
-        dispatch(updateOrderSuccess());
-        notification.success({ message: 'Updated order successfully' });
+	try {
+		dispatch(createUpdateOrderStart());
+		await putOrders(options);
+		dispatch(updateOrderSuccess());
+		notification.success({ message: 'Updated order successfully' });
 
-        const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
-        dispatch(fetchOrder({ sort, filter, page, pageSize }));
-    } catch (err: any) {
-        notification.error({ message: err.response.data.message || err.message });
-        dispatch(createUpdateOrderFailure(err));
-    }
+		const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
+		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+	} catch (err: any) {
+		notification.error({ message: err.response.data.message || err.message });
+		dispatch(createUpdateOrderFailure(err));
+	}
+};
+
+
+export const getAllDishes = (): AppThunk => async (dispatch, getState) => {
+	try {
+		const options: any = {
+			sort: {},
+			filter: {},
+			page: 0,
+			pageSize: 100
+		};
+		const dishesData = await getDishes(options);
+		dispatch(getAllDishesSuccess({ data: dishesData }));
+
+	} catch (err: any) {
+		notification.error({ message: err.response.data.message || err.message });
+	}
 };

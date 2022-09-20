@@ -28,8 +28,10 @@ export const OrderStatuses = [
 ];
 
 export interface Dishes {
+  _id: string | undefined;
   name: string | undefined;
   price: number | undefined;
+  quantity: number | undefined;
 }
 
 export interface Order {

@@ -15,7 +15,6 @@ export async function getOrders(body: any) {
 	} catch (err: any) {
 		throw err;
 	}
-
 }
 
 export async function postOrders(body: any) {
@@ -25,7 +24,6 @@ export async function postOrders(body: any) {
 	} catch (err: any) {
 		throw err;
 	}
-
 }
 
 export async function putOrders(body: any) {
@@ -35,5 +33,4 @@ export async function putOrders(body: any) {
 	} catch (err: any) {
 		throw err;
 	}
-
 }

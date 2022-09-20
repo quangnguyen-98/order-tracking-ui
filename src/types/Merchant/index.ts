@@ -4,14 +4,19 @@ export interface Dishes {
   _id: string | undefined;
   name: string | undefined;
   price: number | undefined;
-  createdDate: string | null;
-  updatedDate: string | null;
+  quantity?: number | null;
+  createdDate?: string | null;
+  updatedDate?: string | null;
 }
 
 export interface ListDishesResponse {
   data: Dishes[];
   pagination: Pagination;
 }
+
+export interface DishesPayload {
+  data: ListDishesResponse;
+};
 
 export interface DishesModalResponse {
   status: string | null;

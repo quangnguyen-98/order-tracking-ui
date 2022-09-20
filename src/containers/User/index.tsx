@@ -14,73 +14,74 @@ import OrderTable from '../../components/User/OrderTable';
 import OrderModal from '../../components/User/OrderModal';
 
 const UserContainer: FC = () => {
-    const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
 
-    const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderReducer);
-    const { isShow } = useAppSelector((state: RootState) => state.orderModalReducer);
-    const { page, pageSize, totalItem } = pagination;
+	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderReducer);
+	const { isShow } = useAppSelector((state: RootState) => state.orderModalReducer);
+	const { page, pageSize, totalItem } = pagination;
 
-    const onChangePage = (page: number) => {
-        dispatch(updatePagination({ ...pagination, page }));
-    };
+	const onChangePage = (page: number) => {
+		dispatch(updatePagination({ ...pagination, page }));
+	};
 
-    const onChangePageSize = (pageSize: number) => {
-        dispatch(updatePagination({ ...pagination, page: 0, pageSize }));
-    };
+	const onChangePageSize = (pageSize: number) => {
+		dispatch(updatePagination({ ...pagination, page: 0, pageSize }));
+	};
 
-    const onOpenOrderModal = (isEdit: boolean, data: Order) => {
-        dispatch(openOrderModalEdit({ isEdit, data }));
-    };
+	const onOpenOrderModal = (isEdit: boolean, data: Order) => {
+		dispatch(openOrderModalEdit({ isEdit, data }));
+	};
 
-    const onUpdateSort = (value: any) => {
-        dispatch(updateSort(value));
-    };
+	const onUpdateSort = (value: any) => {
+		dispatch(updateSort(value));
+	};
 
-    useEffect(() => {
-        return () => {
-            dispatch(resetData());
-        };
-    }, []);
+	useEffect(() => {
+		console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+		return () => {
+			dispatch(resetData());
+		};
+	}, []);
 
-    useEffect(() => {
-        dispatch(fetchOrder({ sort, filter, page, pageSize }));
-    }, [sort, filter, page]);
+	useEffect(() => {
+		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+	}, [sort, filter, page]);
 
-    return (
-        <Layout className='container'>
-            <Container>
-                <Row className='container__user'>
+	return (
+		<Layout className='container'>
+			<Container>
+				<Row className='container__user'>
 
-                    <Col span={24}>
-                        <BreadCrumb path='User' subPath='Order'></BreadCrumb>
+					<Col span={24}>
+						<BreadCrumb path='User' subPath='Order'></BreadCrumb>
 
-                        <Divider />
+						<Divider />
 
-                        <OrderTable sort={sort}
-                            onUpdateSort={onUpdateSort}
-                            data={data}
-                            loading={loading}
-                            onOpenOrderModal={onOpenOrderModal}
-                        ></OrderTable>
+						<OrderTable sort={sort}
+							onUpdateSort={onUpdateSort}
+							data={data}
+							loading={loading}
+							onOpenOrderModal={onOpenOrderModal}
+						></OrderTable>
 
-                        <Divider />
+						<Divider />
 
-                        <Pagination
-                            loading={loading}
-                            page={page}
-                            pageSize={pageSize}
-                            totalItem={totalItem}
-                            onChangePage={onChangePage}
-                            onChangePageSize={onChangePageSize}
-                        />
+						<Pagination
+							loading={loading}
+							page={page}
+							pageSize={pageSize}
+							totalItem={totalItem}
+							onChangePage={onChangePage}
+							onChangePageSize={onChangePageSize}
+						/>
 
-                    </Col>
-                </Row>
-            </Container>
-            {isShow && (<OrderModal></OrderModal>)}
+					</Col>
+				</Row>
+			</Container>
+			{isShow && (<OrderModal></OrderModal>)}
 
-        </Layout>
-    );
+		</Layout>
+	);
 };
 
 export default UserContainer;
