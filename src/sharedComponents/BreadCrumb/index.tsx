@@ -13,15 +13,15 @@ const Breadcrumb = (props: ContainerProps) => {
 
 	return (
 		<Row>
-			<Col span={20}>
+			<Col span={22}>
 				<AntdBreadcrumb>
 					<AntdBreadcrumb.Item>BAEMIN ORDER TRACKING SERVICE</AntdBreadcrumb.Item>
 					<AntdBreadcrumb.Item>{props.path}</AntdBreadcrumb.Item>
 					<AntdBreadcrumb.Item>{props.subPath}</AntdBreadcrumb.Item>
 				</AntdBreadcrumb>
 			</Col>
-			<Col span={4}>
-				<Button className="baemin__button" type="primary" onClick={() => { navigatePage("/"); }}>Back to Dashboard</Button>
+			<Col span={2}>
+				<Button style={{ width: '100%' }} className="baemin__button" type="primary" onClick={() => { navigatePage("/"); }}>Back to Dashboard</Button>
 			</Col>
 		</Row>
 	);

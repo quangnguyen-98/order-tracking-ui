@@ -46,6 +46,7 @@ export interface Order {
   totalPrice: number | undefined;
   createdDate: string | null;
   updatedDate: string | null;
+  originalUpdatedDate?: string | null;
 }
 
 export interface ListOrderResponse {

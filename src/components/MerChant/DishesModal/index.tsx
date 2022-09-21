@@ -1,5 +1,5 @@
 import {
-	Button, Col, Divider, Input, Modal, Row,
+	Button, Col, Divider, Input, Modal, Row, notification
 } from "antd";
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
 import {
@@ -10,9 +10,18 @@ import './styles.scss';
 
 const ModalCreateEditDishes = () => {
 	const dispatch = useAppDispatch();
-	const { isEdit, isShow, data, loading } = useAppSelector(state => state.dishesModalReducer);
+	const { isEdit, isShow, data, loading } = useAppSelector(state => state.dishesPage.dishesModalReducer);
 
 	const onSubmitData = () => {
+
+		if (!data.name) {
+			return notification.error({ message: 'please enter dishes name!' });
+		}
+
+		if (!data.price || Number(data.price) <= 0) {
+			return notification.error({ message: 'The price must be equal or greater than 1!' });
+		}
+
 		if (!isEdit) {
 			let params = {
 				name: data.name,

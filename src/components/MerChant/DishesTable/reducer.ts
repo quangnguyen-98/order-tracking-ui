@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { AppThunk } from '../../redux/store';
-import { Pagination } from '../../types/Common';
-import { defaultPageSize } from '../../constants/appConstant';
-import { Dishes, DishesPayload } from '../../types/Merchant';
+import { AppThunk } from '../../../redux/store';
+import { Pagination } from '../../../types/Common';
+import { defaultPageSize } from '../../../constants/appConstant';
+import { Dishes, DishesPayload } from '../../../types/Merchant';
 
-import { getDishes } from '../../api/merchant.api';
+import { getDishes } from '../../../api/merchant.api';
 
 interface DishesState {
 	data: Dishes[];

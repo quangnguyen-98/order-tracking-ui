@@ -16,8 +16,6 @@ switch (environment) {
 
 export const RootApiEndpoint = ApiEndpoint;
 
-
-
 export const DateTimeFormat = {
 	MMDDYYYYhhmmA: 'MM/DD/YYYY hh:mm A'
 };

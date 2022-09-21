@@ -13,7 +13,7 @@ const Container: FC = () => {
 	};
 
 	return (
-		<Layout className='container'>
+		<Layout className='container--main'>
 			<Row className='container__row'>
 				<Col className='container__column' span={10} offset={7}>
 					<Typography.Title level={1} style={{ margin: 0 }}>BAEMIN ORDER TRACKING SERVICE</Typography.Title>

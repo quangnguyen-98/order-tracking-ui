@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import {
-	Button, Col, Divider, Input, Modal, Row, Select, notification
+	Button, Col, Divider, Input, Modal, Row, Select, Empty, notification
 } from "antd";
 import { formatMoney } from '../../../utils/stringUtils';
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
@@ -15,9 +15,13 @@ const { Option } = Select;
 
 const ModalCreateEditOrder = () => {
 	const dispatch = useAppDispatch();
-	const { isEdit, isShow, data, loading, dishesOptionData, selectedDishes, dishesQuantity } = useAppSelector(state => state.orderModalReducer);
+	const { isEdit, isShow, data, loading, dishesOptionData, selectedDishes, dishesQuantity } = useAppSelector(state => state.orderPage.orderModalReducer);
 
 	const onSubmitData = () => {
+		if (!data.orderName) {
+			return notification.error({ message: 'Please enter Order Name before add to order!' });
+		}
+
 		if (data.dishes.length <= 0) {
 			return notification.error({ message: 'Please add at least 1 dish before ordering!' });
 		}
@@ -34,11 +38,6 @@ const ModalCreateEditOrder = () => {
 	};
 
 	const onAddDishesToOrder = () => {
-
-		if (!data.orderName) {
-			return notification.error({ message: 'Please enter Order Name before add to order!' });
-		}
-
 		if (!selectedDishes) {
 			return notification.error({ message: 'Please select dishes before add to order!' });
 		}
@@ -106,7 +105,6 @@ const ModalCreateEditOrder = () => {
 					<h6>Status:</h6>
 				</Col>
 				<Col span={20}>
-
 					<Select className="text-start" value={data!.status?.toString()} style={{ width: '100%' }} size={'large'} disabled={!isEdit} onChange={(value) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'status', value: value }));
 					}}>
@@ -240,12 +238,24 @@ const ModalCreateEditOrder = () => {
 
 					<Divider />
 
-					<Row className="text-start" justify="end" align="middle" gutter={[10, 10]}>
-						<Col span={8}><h6>Dishes Name:</h6></Col>
-						<Col span={6}><h6>Price:</h6></Col>
-						<Col span={6}><h6>Quantity:</h6></Col>
-						<Col span={4}></Col>
-					</Row>
+					{data.dishes.length > 0 ?
+						<Row className="text-start" justify="end" align="middle" gutter={[10, 10]}>
+							<Col span={8}><h6>Dishes Name:</h6></Col>
+							<Col span={6}><h6>Price:</h6></Col>
+							<Col span={6}><h6>Quantity:</h6></Col>
+							<Col span={4}></Col>
+						</Row>
+
+						:
+						<Row justify={'center'} style={{ height: '30%' }}>
+							<Col>
+								<Empty
+									description={<span>Please add dishes to order</span>}
+								/>
+							</Col>
+						</Row>
+					}
+
 					<Row className="text-end" justify="end" align="top" gutter={[10, 10]}>
 						<Col span={24}>
 							{data.dishes.map((item) => (

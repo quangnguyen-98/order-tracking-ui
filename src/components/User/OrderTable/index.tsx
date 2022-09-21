@@ -1,6 +1,6 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton, Tag
+	Button, Col, Empty, message, Row, Skeleton, Tag, Divider, Input, Popover
 } from "antd";
 import { Table } from 'reactstrap';
 import { useAppDispatch } from '../../../redux/hook';
@@ -9,20 +9,24 @@ import { Order } from '../../../types/User';
 import { openOrderModalCreate } from '../../User/OrderModal/reducer';
 
 import ColumnHeader from '../../../sharedComponents/ColumnHeader';
+import SearchAndFilter from '../../../sharedComponents/SearchAndFilter';
+
 
 interface OrderTableProps {
 	data: Order[];
 	loading: boolean;
 	sort: any;
+	filter: any;
 	onUpdateSort: Function;
+	onUpdateFilter: Function;
 	onOpenOrderModal: Function;
 }
 
 const OrderTable = (props: OrderTableProps) => {
-	const { data, loading, onOpenOrderModal, sort, onUpdateSort } = props;
+	const { data, loading, onOpenOrderModal, sort, onUpdateSort, filter } = props;
 	const dispatch = useAppDispatch();
 
-	const getTagByStatus = (item: string | null) => {
+	const getStatusTag = (item: string | null) => {
 		let color = '';
 		let displayName = '';
 		switch (item) {
@@ -55,25 +59,74 @@ const OrderTable = (props: OrderTableProps) => {
 				displayName = 'Canceled';
 				break;
 		}
-
 		return <Tag color={color}>{displayName}</Tag>;
 	};
 
+	const getLateStatusTag = (item: any) => {
+		let currentDate = new Date().getTime();
+		let itemDate = new Date(item.originalUpdatedDate).getTime();
+		let diffTime = ((currentDate - itemDate) / 1000 / 60);
+		if (item.status === 'DONE') {
+			return null;
+		}
+
+		if (item.status === 'DELIVERING') {
+			if (diffTime > 40) {
+				return <Tag color={'#cf1322'}>Late order</Tag>;
+			};
+			if (diffTime > 10) {
+				return <Tag color={'#ffc53d'}>Warning order</Tag>;
+			};
+			// return <Tag color={color}>{displayName}</Tag>;
+		} else {
+			if (diffTime > 15) {
+				return <Tag color={'#cf1322'}>Late order</Tag>;
+			};
+			if (diffTime > 10) {
+				return <Tag color={'#ffc53d'}>Warning order</Tag>;
+			};
+		}
+
+		return null;
+	};
+
+	const onSearch = (value: any) => {
+		props.onUpdateFilter(value);
+	};
+
+	const filterOptions = [
+		{
+			key: 'last5min',
+			displayName: 'Updated last 5 min',
+			value: false
+		},
+		{
+			key: 'last10min',
+			displayName: 'Updated last 10 min',
+			value: false
+		},
+		{
+			key: 'last15min',
+			displayName: 'Updated last 15 min',
+			value: false
+		}
+	];
 
 	return (
 		<>
 			<Row>
-				<Col span={4}>
-					<Button className="baemin__button" type="primary" onClick={() => { dispatch(openOrderModalCreate()); }}>Create new order</Button>
-				</Col>
-				<Col span={20}>
-
-				</Col>
+				<Col span={4}><Button style={{ width: '100%' }} className="baemin__button" type="primary" onClick={() => { dispatch(openOrderModalCreate()); }}>Create new order</Button></Col>
+				<Col span={20}></Col>
 			</Row>
-			<br></br>
+
+			<Divider />
+
+			<SearchAndFilter placeholder={'Search by Order name'} filterOptions={filterOptions} searchField={'orderName'} filter={filter} onSearch={onSearch}></SearchAndFilter>
+
+			<Divider />
+
 			<Row justify={'center'}>
 				<Col span={24}>
-
 					<Table hover responsive>
 						<thead>
 							<tr>
@@ -83,6 +136,7 @@ const OrderTable = (props: OrderTableProps) => {
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='riderName' columnCaption='Rider Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='status' columnCaption='Status'></ColumnHeader>
+								<ColumnHeader columnCaption='Late Status'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
 								<ColumnHeader columnCaption='Action'></ColumnHeader>
@@ -106,7 +160,8 @@ const OrderTable = (props: OrderTableProps) => {
 														<td className="align-middle">{item.merchantName}</td>
 														<td className="align-middle">{item.riderName}</td>
 														<td className="align-middle">{formatMoney(item.totalPrice!)}</td>
-														<td className="align-middle">{getTagByStatus(item.status!)}</td>
+														<td className="align-middle">{getStatusTag(item.status!)}</td>
+														<td className="align-middle">{getLateStatusTag(item)}</td>
 														<td className="align-middle">{item.createdDate}</td>
 														<td className="align-middle">{item.updatedDate}</td>
 														<td className="align-middle">
@@ -124,7 +179,7 @@ const OrderTable = (props: OrderTableProps) => {
 								:
 								<tbody>
 									<tr>
-										<th colSpan={9} className="align-middle text-left"><Skeleton active /></th>
+										<th colSpan={10} className="align-middle text-left"><Skeleton active /></th>
 									</tr>
 								</tbody>
 							}

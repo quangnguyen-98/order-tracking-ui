@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { AppThunk } from '../../redux/store';
-import { Pagination } from '../../types/Common';
-import { defaultPageSize } from '../../constants/appConstant';
-import { Order, ListOrderResponse } from '../../types/User';
+import { AppThunk } from '../../../redux/store';
+import { Pagination } from '../../../types/Common';
+import { defaultPageSize } from '../../../constants/appConstant';
+import { Order, ListOrderResponse } from '../../../types/User';
 
-import { getOrders } from '../../api/order.api';
+import { getOrders } from '../../../api/order.api';
 
 interface OrderState {
     data: Order[];
@@ -46,6 +46,7 @@ const orderTable = createSlice({
         },
         updateFilter(state, action: PayloadAction<any>) {
             state.filter = action.payload;
+            state.pagination.page = 0;
         },
         getOrderStart(state) {
             state.loading = true;

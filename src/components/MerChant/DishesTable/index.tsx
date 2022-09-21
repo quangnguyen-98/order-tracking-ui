@@ -1,6 +1,6 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton
+	Button, Col, Empty, message, Row, Skeleton, Divider
 } from "antd";
 import { Table } from 'reactstrap';
 
@@ -30,10 +30,11 @@ const MerchantTable = (props: MerchantTableProps) => {
 					<Button className="baemin__button" type="primary" onClick={() => { dispatch(openDishesModalCreate()); }}>Create new dishes</Button>
 				</Col>
 				<Col span={20}>
-
 				</Col>
 			</Row>
-			<br></br>
+
+			<Divider />
+
 			<Row justify={'center'}>
 				<Col span={24}>
 

@@ -3,7 +3,7 @@ import { notification } from 'antd';
 import { postOrders, putOrders } from '../../../api/order.api';
 import { getDishes } from '../../../api/merchant.api';
 import { Order } from '../../../types/User';
-import { fetchOrder } from '../../../containers/User/reducer';
+import { fetchOrder } from '../OrderTable/reducer';
 import { AppThunk } from '../../../redux/store';
 import { Dishes, DishesPayload } from '../../../types/Merchant';
 
@@ -47,7 +47,7 @@ const initialState: OderModalState = {
 	dishesOptionData: [
 	],
 	selectedDishes: undefined,
-	dishesQuantity: undefined,
+	dishesQuantity: 1,
 	loading: false,
 	error: null
 };
@@ -96,6 +96,7 @@ const orderModal = createSlice({
 				case 'dishes':
 					state.data.dishes = value;
 					state.data.totalPrice = state.data.dishes.reduce((total, currentDishes) => total + (currentDishes.price! * currentDishes.quantity!), 0);
+					state.dishesQuantity = 1;
 					break;
 				case 'orderName':
 					state.data.orderName = value;
@@ -154,7 +155,7 @@ export const createOrder = (options: any | {}): AppThunk => async (dispatch, get
 		notification.success({ message: 'Created order successfully' });
 		dispatch(createOrderSuccess());
 
-		const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
+		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
 		dispatch(fetchOrder({ sort, filter, page, pageSize }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
@@ -169,7 +170,7 @@ export const updateOrder = (options: any | {}): AppThunk => async (dispatch, get
 		dispatch(updateOrderSuccess());
 		notification.success({ message: 'Updated order successfully' });
 
-		const { pagination: { page, pageSize }, sort, filter } = getState().orderReducer;
+		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
 		dispatch(fetchOrder({ sort, filter, page, pageSize }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });

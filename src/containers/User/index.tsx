@@ -1,9 +1,8 @@
 import { FC, useEffect } from 'react';
 import { RootState } from '../../redux/store';
-import { Container } from 'reactstrap';
 import { Col, Divider, Row, Layout } from "antd";
 
-import { updatePagination, fetchOrder, resetData, updateSort } from './reducer';
+import { updatePagination, fetchOrder, resetData, updateSort, updateFilter } from '../../components/User/OrderTable/reducer';
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
 import { openOrderModalEdit } from '../../components/User/OrderModal/reducer';
 import { Order } from '../../types/User';
@@ -16,8 +15,8 @@ import OrderModal from '../../components/User/OrderModal';
 const UserContainer: FC = () => {
 	const dispatch = useAppDispatch();
 
-	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderReducer);
-	const { isShow } = useAppSelector((state: RootState) => state.orderModalReducer);
+	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderReducer);
+	const { isShow } = useAppSelector((state: RootState) => state.orderPage.orderModalReducer);
 	const { page, pageSize, totalItem } = pagination;
 
 	const onChangePage = (page: number) => {
@@ -36,8 +35,11 @@ const UserContainer: FC = () => {
 		dispatch(updateSort(value));
 	};
 
+	const onUpdateFilter = (value: any) => {
+		dispatch(updateFilter(value));
+	};
+
 	useEffect(() => {
-		console.log('process.env.NODE_ENV', process.env.NODE_ENV);
 		return () => {
 			dispatch(resetData());
 		};
@@ -48,36 +50,38 @@ const UserContainer: FC = () => {
 	}, [sort, filter, page]);
 
 	return (
-		<Layout className='container'>
-			<Container>
-				<Row className='container__user'>
+		<Layout className='container--main'>
 
-					<Col span={24}>
-						<BreadCrumb path='User' subPath='Order'></BreadCrumb>
+			<Row className='container__user'>
 
-						<Divider />
+				<Col span={24}>
+					<BreadCrumb path='User' subPath='Order'></BreadCrumb>
 
-						<OrderTable sort={sort}
-							onUpdateSort={onUpdateSort}
-							data={data}
-							loading={loading}
-							onOpenOrderModal={onOpenOrderModal}
-						></OrderTable>
+					<Divider />
 
-						<Divider />
+					<OrderTable
+						sort={sort}
+						filter={filter}
+						onUpdateSort={onUpdateSort}
+						data={data}
+						loading={loading}
+						onOpenOrderModal={onOpenOrderModal}
+						onUpdateFilter={onUpdateFilter}
+					></OrderTable>
 
-						<Pagination
-							loading={loading}
-							page={page}
-							pageSize={pageSize}
-							totalItem={totalItem}
-							onChangePage={onChangePage}
-							onChangePageSize={onChangePageSize}
-						/>
+					<Divider />
 
-					</Col>
-				</Row>
-			</Container>
+					<Pagination
+						loading={loading}
+						page={page}
+						pageSize={pageSize}
+						totalItem={totalItem}
+						onChangePage={onChangePage}
+						onChangePageSize={onChangePageSize}
+					/>
+
+				</Col>
+			</Row>
 			{isShow && (<OrderModal></OrderModal>)}
 
 		</Layout>

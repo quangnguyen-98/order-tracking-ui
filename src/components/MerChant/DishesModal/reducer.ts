@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { postDishes, putDishes } from '../../../api/merchant.api';
 import { Dishes } from '../../../types/Merchant';
-import { fetchDishes } from '../../../containers/Merchant/reducer';
+import { fetchDishes } from '../DishesTable/reducer';
 import { AppThunk } from '../../../redux/store';
 
 interface DishesModalState {
@@ -105,7 +105,7 @@ export const createDishes = (options: any | {}): AppThunk => async (dispatch, ge
         notification.success({ message: 'Created dishes successfully' });
         dispatch(createDishesSuccess());
 
-        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
+        const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
         dispatch(fetchDishes({ sort, filter, page, pageSize }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
@@ -120,7 +120,7 @@ export const updateDishes = (options: any | {}): AppThunk => async (dispatch, ge
         dispatch(updateDishesSuccess());
         notification.success({ message: 'Updated dishes successfully' });
 
-        const { pagination: { page, pageSize }, sort, filter } = getState().dishesReducer;
+        const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
         dispatch(fetchDishes({ sort, filter, page, pageSize }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });

@@ -9,7 +9,7 @@ export async function getOrders(body: any) {
 		const { data: response } = await axios.post<ListOrderResponse>(`${RootApiEndpoint}/order/get-list-order`, { ...body }, DefaulHttpOption);
 		const orderData = {
 			...response,
-			data: response.data.map(item => ({ ...item, createdDate: moment(item.createdDate).format(MMDDYYYYhhmmA), updatedDate: moment(item.updatedDate).format(MMDDYYYYhhmmA) }))
+			data: response.data.map(item => ({ ...item, createdDate: moment(item.createdDate).format(MMDDYYYYhhmmA), updatedDate: moment(item.updatedDate).format(MMDDYYYYhhmmA), originalUpdatedDate: item.updatedDate }))
 		};
 		return orderData;
 	} catch (err: any) {
