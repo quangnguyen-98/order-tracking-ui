@@ -3,7 +3,7 @@ import { notification } from 'antd';
 import { AppThunk } from '../../../redux/store';
 import { Pagination } from '../../../types/Common';
 import { defaultPageSize } from '../../../constants/appConstant';
-import { Order, ListOrderResponse } from '../../../types/User';
+import { Order, ListOrderResponse } from '../../../types/Order';
 
 import { getOrders } from '../../../api/order.api';
 
@@ -82,10 +82,12 @@ export const {
 
 export default orderTable.reducer;
 
-export const fetchOrder = (options: any | {}): AppThunk => async dispatch => {
+export const fetchOrder = (params: any | {}, options: any | { isShowLoading: true; }): AppThunk => async dispatch => {
     try {
-        dispatch(getOrderStart());
-        const orderData = await getOrders(options);
+        if (options.isShowLoading) {
+            dispatch(getOrderStart());
+        }
+        const orderData = await getOrders(params);
         dispatch(getOrderSuccess({ data: orderData }));
     } catch (err: any) {
         notification.error({ message: err.message });

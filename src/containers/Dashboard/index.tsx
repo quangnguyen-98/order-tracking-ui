@@ -1,32 +1,20 @@
 import { FC } from 'react';
-import { useNavigate } from "react-router-dom";
+import { Layout, Col, Row } from 'antd';
 
-import { Button, Col, Row, Typography, Layout } from 'antd';
-import './styles.scss';
+import Chart from '../../components/Dashboard/Chart';
+import BreadCrumb from '../../sharedComponents/BreadCrumb';
 
-const Container: FC = () => {
-
-	let navigate = useNavigate();
-
-	const navigatePage = (pageName: string) => {
-		navigate(pageName);
-	};
-
+const Dashboard: FC = () => {
 	return (
-		<Layout className='container--main'>
-			<Row className='container__row'>
-				<Col className='container__column' span={10} offset={7}>
-					<Typography.Title level={1} style={{ margin: 0 }}>BAEMIN ORDER TRACKING SERVICE</Typography.Title>
+		<Layout style={{ background: 'white' }} className='container--main'>
+			<Row className='container__order'>
+				<Col span={24}>
+					<BreadCrumb path='Dashboard'></BreadCrumb>
+					<Chart></Chart>
 				</Col>
-
-			</Row>
-			<Row className='container__row'>
-				<Col className='container__column' span={8}><Button className="baemin__button" type="primary" onClick={() => { navigatePage("/user"); }}>Go to User Page</Button></Col>
-				<Col className='container__column' span={8}><Button className="baemin__button" type="primary" onClick={() => { navigatePage("/merchant"); }}>Go to Merchant Page</Button></Col>
-				<Col className='container__column' span={8}><Button className="baemin__button" type="primary" onClick={() => { navigatePage("/driver"); }}>Go to Driver Page</Button></Col>
 			</Row>
 		</Layout>
 	);
 };
 
-export default Container;
+export default Dashboard;

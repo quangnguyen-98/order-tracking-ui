@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { postDishes, putDishes } from '../../../api/merchant.api';
-import { Dishes } from '../../../types/Merchant';
+import { postDishes, putDishes } from '../../../api/dishes.api';
+import { Dishes } from '../../../types/Dishes';
 import { fetchDishes } from '../DishesTable/reducer';
 import { AppThunk } from '../../../redux/store';
 
@@ -72,8 +72,9 @@ const dishesModal = createSlice({
             return initialState;
         },
         updateDishesSuccess(state) {
-            state.loading = false;
-            state.error = null;
+            // state.loading = false;
+            // state.error = null;
+            return initialState;
         },
         createUpdateDishesFailure(state, action: PayloadAction<string>) {
             state.loading = false;
@@ -106,7 +107,7 @@ export const createDishes = (options: any | {}): AppThunk => async (dispatch, ge
         dispatch(createDishesSuccess());
 
         const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
-        dispatch(fetchDishes({ sort, filter, page, pageSize }));
+        dispatch(fetchDishes({ sort, filter, page, pageSize }, { isShowLoading: false }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
         dispatch(createUpdateDishesFailure(err));
@@ -121,7 +122,7 @@ export const updateDishes = (options: any | {}): AppThunk => async (dispatch, ge
         notification.success({ message: 'Updated dishes successfully' });
 
         const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
-        dispatch(fetchDishes({ sort, filter, page, pageSize }));
+        dispatch(fetchDishes({ sort, filter, page, pageSize }, { isShowLoading: false }));
     } catch (err: any) {
         notification.error({ message: err.response.data.message || err.message });
         dispatch(createUpdateDishesFailure(err));

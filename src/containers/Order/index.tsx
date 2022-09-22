@@ -2,15 +2,15 @@ import { FC, useEffect } from 'react';
 import { RootState } from '../../redux/store';
 import { Col, Divider, Row, Layout } from "antd";
 
-import { updatePagination, fetchOrder, resetData, updateSort, updateFilter } from '../../components/User/OrderTable/reducer';
+import { updatePagination, fetchOrder, resetData, updateSort, updateFilter } from '../../components/Order/OrderTable/reducer';
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { openOrderModalEdit } from '../../components/User/OrderModal/reducer';
-import { Order } from '../../types/User';
+import { openOrderModalEdit } from '../../components/Order/OrderModal/reducer';
+import { Order } from '../../types/Order';
 
 import BreadCrumb from '../../sharedComponents/BreadCrumb';
 import Pagination from '../../sharedComponents/Pagination';
-import OrderTable from '../../components/User/OrderTable';
-import OrderModal from '../../components/User/OrderModal';
+import OrderTable from '../../components/Order/OrderTable';
+import OrderModal from '../../components/Order/OrderModal';
 
 const UserContainer: FC = () => {
 	const dispatch = useAppDispatch();
@@ -46,16 +46,14 @@ const UserContainer: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+		dispatch(fetchOrder({ sort, filter, page, pageSize }, { isShowLoading: true }));
 	}, [sort, filter, page]);
 
 	return (
-		<Layout className='container--main'>
-
-			<Row className='container__user'>
-
+		<Layout style={{ background: 'white' }} className='container--main'>
+			<Row className='container__order'>
 				<Col span={24}>
-					<BreadCrumb path='User' subPath='Order'></BreadCrumb>
+					<BreadCrumb path='Order'></BreadCrumb>
 
 					<Divider />
 

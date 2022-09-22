@@ -6,8 +6,6 @@ import {
 	onChangeDishesFormValue, resetData, updateDishes, createDishes
 } from './reducer';
 
-import './styles.scss';
-
 const ModalCreateEditDishes = () => {
 	const dispatch = useAppDispatch();
 	const { isEdit, isShow, data, loading } = useAppSelector(state => state.dishesPage.dishesModalReducer);
@@ -15,7 +13,7 @@ const ModalCreateEditDishes = () => {
 	const onSubmitData = () => {
 
 		if (!data.name) {
-			return notification.error({ message: 'please enter dishes name!' });
+			return notification.error({ message: 'Please enter dishes name!' });
 		}
 
 		if (!data.price || Number(data.price) <= 0) {
@@ -62,7 +60,7 @@ const ModalCreateEditDishes = () => {
 					<h6>Dishes Name:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.name} size="large"
+					<Input disabled={loading} value={data!.name} size="large"
 						placeholder="Dishes Name" onChange={(e) => {
 							dispatch(onChangeDishesFormValue({ fieldName: 'name', value: e.target.value }));
 						}}
@@ -75,7 +73,7 @@ const ModalCreateEditDishes = () => {
 					<h6>Price:</h6>
 				</Col>
 				<Col span={20}>
-					<Input type="number" value={data!.price} size="large" placeholder="Price"
+					<Input disabled={loading} type="number" value={data!.price} size="large" placeholder="Price"
 						onChange={(e) => {
 							dispatch(onChangeDishesFormValue({ fieldName: 'price', value: e.target.value }));
 						}}
@@ -91,7 +89,7 @@ const ModalCreateEditDishes = () => {
 					</Button>
 				</Col>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} onClick={() => { dispatch(resetData()); }}>Close</Button>
+					<Button size={'middle'} style={{ width: '100%' }} loading={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
 				</Col>
 			</Row>
 		</Modal>

@@ -1,0 +1,12 @@
+.container--main {
+    background: "white";
+    padding-top: 10px;
+    padding: 20px;
+    height: 100vh;
+    .container__row {
+        padding-top: 200px;
+    }
+    .container__column {
+        text-align: center;
+    }
+}

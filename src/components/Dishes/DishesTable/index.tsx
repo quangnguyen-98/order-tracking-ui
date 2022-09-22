@@ -4,15 +4,15 @@ import {
 } from "antd";
 import { Table } from 'reactstrap';
 
-import { formatMoney } from '../../../utils/stringUtils';
+import { formatMoney, formatDateTime } from '../../../utils/stringUtils';
 import { useAppDispatch } from '../../../redux/hook';
 import { openDishesModalCreate } from '../DishesModal/reducer';
 
-import { Dishes } from '../../../types/Merchant';
+import { Dishes } from '../../../types/Dishes';
 
 import ColumnHeader from '../../../sharedComponents/ColumnHeader';
 
-interface MerchantTableProps {
+interface DishesTableProps {
 	data: Dishes[];
 	loading: boolean;
 	sort: any;
@@ -20,8 +20,8 @@ interface MerchantTableProps {
 	onOpenDishesModal: Function;
 }
 
-const MerchantTable = (props: MerchantTableProps) => {
-	const { data, loading, onOpenDishesModal: onOpenMerchantModal, sort, onUpdateSort } = props;
+const DishesTable = (props: DishesTableProps) => {
+	const { data, loading, onOpenDishesModal, sort, onUpdateSort } = props;
 	const dispatch = useAppDispatch();
 	return (
 		<>
@@ -64,11 +64,11 @@ const MerchantTable = (props: MerchantTableProps) => {
 														}}>{item._id} </span></th>
 														<td className="align-middle">{item.name}</td>
 														<td className="align-middle">{formatMoney(item.price!)}</td>
-														<td className="align-middle">{item.createdDate}</td>
-														<td className="align-middle">{item.updatedDate}</td>
+														<td className="align-middle">{formatDateTime(item.createdDate)}</td>
+														<td className="align-middle">{formatDateTime(item.updatedDate)}</td>
 														<td className="align-middle">
 															<Button onClick={() => {
-																onOpenMerchantModal(true, item);
+																onOpenDishesModal(true, item);
 															}}> <i className="far fa-edit" />
 															</Button>
 														</td>
@@ -104,4 +104,4 @@ const MerchantTable = (props: MerchantTableProps) => {
 	);
 };
 
-export default MerchantTable;
+export default DishesTable;

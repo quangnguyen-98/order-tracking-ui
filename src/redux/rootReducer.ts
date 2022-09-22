@@ -1,10 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { reducer as form } from 'redux-form';
-import dishesReducer from '../components/MerChant/DishesTable/reducer';
-import dishesModalReducer from '../components/MerChant/DishesModal/reducer';
 
-import orderReducer from '../components/User/OrderTable/reducer';
-import orderModalReducer from '../components/User/OrderModal/reducer';
+import chartReducer from '../components/Dashboard/Chart/reducer';
+
+import dishesReducer from '../components/Dishes/DishesTable/reducer';
+import dishesModalReducer from '../components/Dishes/DishesModal/reducer';
+
+import orderReducer from '../components/Order/OrderTable/reducer';
+import orderModalReducer from '../components/Order/OrderModal/reducer';
 
 const dishesPage = combineReducers({
   dishesReducer,
@@ -18,6 +21,7 @@ const orderPage = combineReducers({
 
 const rootReducer = combineReducers({
   form,
+  chartReducer,
   dishesPage,
   orderPage
 

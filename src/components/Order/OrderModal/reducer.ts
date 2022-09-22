@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { postOrders, putOrders } from '../../../api/order.api';
-import { getDishes } from '../../../api/merchant.api';
-import { Order } from '../../../types/User';
+import { getDishes } from '../../../api/dishes.api';
+import { Order } from '../../../types/Order';
 import { fetchOrder } from '../OrderTable/reducer';
 import { AppThunk } from '../../../redux/store';
-import { Dishes, DishesPayload } from '../../../types/Merchant';
+import { Dishes, DishesPayload } from '../../../types/Dishes';
 
 interface OderModalState {
 	isShow: boolean;
@@ -42,7 +42,8 @@ const initialState: OderModalState = {
 		dishes: [],
 		totalPrice: 0,
 		createdDate: null,
-		updatedDate: null
+		updatedDate: null,
+		statusUpdatedDate: null
 	},
 	dishesOptionData: [
 	],
@@ -119,8 +120,9 @@ const orderModal = createSlice({
 			return initialState;
 		},
 		updateOrderSuccess(state) {
-			state.loading = false;
-			state.error = null;
+			return initialState;
+			// state.loading = false;
+			// state.error = null;
 		},
 		createUpdateOrderFailure(state, action: PayloadAction<string>) {
 			state.loading = false;
@@ -156,7 +158,7 @@ export const createOrder = (options: any | {}): AppThunk => async (dispatch, get
 		dispatch(createOrderSuccess());
 
 		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
-		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+		dispatch(fetchOrder({ sort, filter, page, pageSize }, { isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
@@ -171,7 +173,7 @@ export const updateOrder = (options: any | {}): AppThunk => async (dispatch, get
 		notification.success({ message: 'Updated order successfully' });
 
 		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
-		dispatch(fetchOrder({ sort, filter, page, pageSize }));
+		dispatch(fetchOrder({ sort, filter, page, pageSize }, { isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));

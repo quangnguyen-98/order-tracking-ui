@@ -1,12 +1,12 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton, Tag, Divider, Input, Popover
+	Button, Col, Empty, message, Row, Skeleton, Tag, Divider
 } from "antd";
 import { Table } from 'reactstrap';
 import { useAppDispatch } from '../../../redux/hook';
-import { formatMoney } from '../../../utils/stringUtils';
-import { Order } from '../../../types/User';
-import { openOrderModalCreate } from '../../User/OrderModal/reducer';
+import { formatMoney, formatDateTime } from '../../../utils/stringUtils';
+import { Order } from '../../../types/Order';
+import { openOrderModalCreate } from '../../Order/OrderModal/reducer';
 
 import ColumnHeader from '../../../sharedComponents/ColumnHeader';
 import SearchAndFilter from '../../../sharedComponents/SearchAndFilter';
@@ -35,7 +35,7 @@ const OrderTable = (props: OrderTableProps) => {
 				displayName = 'Created';
 				break;
 			case 'ACCEPTED':
-				color = '#389e0d';
+				color = '#1890ff';
 				displayName = 'Accepted';
 				break;
 			case 'DRIVERASSIGNED':
@@ -59,32 +59,45 @@ const OrderTable = (props: OrderTableProps) => {
 				displayName = 'Canceled';
 				break;
 		}
-		return <Tag color={color}>{displayName}</Tag>;
+		return <Tag style={{ width: '100%', textAlign: 'center' }} color={color}>{displayName}</Tag>;
 	};
+
+	const renderLateStatusTag = (color: any, title: any) => <Tag style={{ width: '100%', textAlign: 'center' }} color={color}>{title}</Tag>;
 
 	const getLateStatusTag = (item: any) => {
 		let currentDate = new Date().getTime();
-		let itemDate = new Date(item.originalUpdatedDate).getTime();
+		let itemDate = new Date(item.statusUpdatedDate).getTime();
 		let diffTime = ((currentDate - itemDate) / 1000 / 60);
 		if (item.status === 'DONE') {
 			return null;
 		}
 
+		let color = '';
+		let title = '';
+
 		if (item.status === 'DELIVERING') {
 			if (diffTime > 40) {
-				return <Tag color={'#cf1322'}>Late order</Tag>;
+				color = '#cf1322';
+				title = 'Late order';
+				return renderLateStatusTag(color, title);
 			};
-			if (diffTime > 10) {
-				return <Tag color={'#ffc53d'}>Warning order</Tag>;
+			if (diffTime > 30) {
+				color = '#ffc53d';
+				title = 'Warning order';
+				return renderLateStatusTag(color, title);
 			};
-			// return <Tag color={color}>{displayName}</Tag>;
 		} else {
 			if (diffTime > 15) {
-				return <Tag color={'#cf1322'}>Late order</Tag>;
+				color = '#cf1322';
+				title = 'Late order';
+				return renderLateStatusTag(color, title);
 			};
 			if (diffTime > 10) {
-				return <Tag color={'#ffc53d'}>Warning order</Tag>;
+				color = '#ffc53d';
+				title = 'Warning order';
+				return renderLateStatusTag(color, title);
 			};
+
 		}
 
 		return null;
@@ -97,17 +110,17 @@ const OrderTable = (props: OrderTableProps) => {
 	const filterOptions = [
 		{
 			key: 'last5min',
-			displayName: 'Updated last 5 min',
+			displayName: 'Updated within the last 5 minutes',
 			value: false
 		},
 		{
 			key: 'last10min',
-			displayName: 'Updated last 10 min',
+			displayName: 'Updated within the last 10 minutes',
 			value: false
 		},
 		{
 			key: 'last15min',
-			displayName: 'Updated last 15 min',
+			displayName: 'Updated within the last 15 minutes',
 			value: false
 		}
 	];
@@ -136,7 +149,8 @@ const OrderTable = (props: OrderTableProps) => {
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='riderName' columnCaption='Rider Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='status' columnCaption='Status'></ColumnHeader>
-								<ColumnHeader columnCaption='Late Status'></ColumnHeader>
+								<ColumnHeader columnCaption='Warning/Late'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='statusUpdatedDate' columnCaption='Status Updated Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
 								<ColumnHeader columnCaption='Action'></ColumnHeader>
@@ -162,8 +176,9 @@ const OrderTable = (props: OrderTableProps) => {
 														<td className="align-middle">{formatMoney(item.totalPrice!)}</td>
 														<td className="align-middle">{getStatusTag(item.status!)}</td>
 														<td className="align-middle">{getLateStatusTag(item)}</td>
-														<td className="align-middle">{item.createdDate}</td>
-														<td className="align-middle">{item.updatedDate}</td>
+														<td className="align-middle">{formatDateTime(item.statusUpdatedDate)}</td>
+														<td className="align-middle">{formatDateTime(item.createdDate)}</td>
+														<td className="align-middle">{formatDateTime(item.updatedDate)}</td>
 														<td className="align-middle">
 															<Button onClick={() => {
 																onOpenOrderModal(true, item);
@@ -179,7 +194,7 @@ const OrderTable = (props: OrderTableProps) => {
 								:
 								<tbody>
 									<tr>
-										<th colSpan={10} className="align-middle text-left"><Skeleton active /></th>
+										<th colSpan={11} className="align-middle text-left"><Skeleton active /></th>
 									</tr>
 								</tbody>
 							}

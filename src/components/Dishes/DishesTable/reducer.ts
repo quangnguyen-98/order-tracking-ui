@@ -3,9 +3,9 @@ import { notification } from 'antd';
 import { AppThunk } from '../../../redux/store';
 import { Pagination } from '../../../types/Common';
 import { defaultPageSize } from '../../../constants/appConstant';
-import { Dishes, DishesPayload } from '../../../types/Merchant';
+import { Dishes, DishesPayload } from '../../../types/Dishes';
 
-import { getDishes } from '../../../api/merchant.api';
+import { getDishes } from '../../../api/dishes.api';
 
 interface DishesState {
 	data: Dishes[];
@@ -76,10 +76,12 @@ export const {
 } = dishesTable.actions;
 export default dishesTable.reducer;
 
-export const fetchDishes = (options: any | {}): AppThunk => async dispatch => {
+export const fetchDishes = (params: any | {}, options: any | { isShowLoading: true; }): AppThunk => async dispatch => {
 	try {
-		dispatch(getDishesStart());
-		const dishesData = await getDishes(options);
+		if (options.isShowLoading) {
+			dispatch(getDishesStart());
+		}
+		const dishesData = await getDishes(params);
 		dispatch(getDishesSuccess({ data: dishesData }));
 	} catch (err: any) {
 		notification.error({ message: err.message });

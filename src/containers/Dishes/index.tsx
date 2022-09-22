@@ -2,17 +2,17 @@ import { FC, useEffect } from 'react';
 import { Col, Divider, Row, Layout } from "antd";
 
 import { RootState } from '../../redux/store';
-import { updatePagination, fetchDishes, resetData, updateSort } from '../../components/MerChant/DishesTable/reducer';
+import { updatePagination, fetchDishes, resetData, updateSort } from '../../components/Dishes/DishesTable/reducer';
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { openDishesModalEdit } from '../../components/MerChant/DishesModal/reducer';
-import { Dishes } from '../../types/Merchant';
+import { openDishesModalEdit } from '../../components/Dishes/DishesModal/reducer';
+import { Dishes } from '../../types/Dishes';
 
 import BreadCrumb from '../../sharedComponents/BreadCrumb';
 import Pagination from '../../sharedComponents/Pagination';
-import DishesTable from '../../components/MerChant/DishesTable';
-import DishesModal from '../../components/MerChant/DishesModal';
+import DishesTable from '../../components/Dishes/DishesTable';
+import DishesModal from '../../components/Dishes/DishesModal';
 
-const MerchantContainer: FC = () => {
+const DishesContainer: FC = () => {
 	const dispatch = useAppDispatch();
 
 	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
@@ -42,15 +42,15 @@ const MerchantContainer: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(fetchDishes({ sort, filter, page, pageSize }));
+		dispatch(fetchDishes({ sort, filter, page, pageSize }, { isShowLoading: true }));
 	}, [sort, filter, page]);
 
 	return (
-		<Layout className='container--main'>
-			<Row className='container__merchant'>
+		<Layout style={{ background: 'white' }} className='container--main'>
+			<Row className='container__dishes'>
 
 				<Col span={24}>
-					<BreadCrumb path='Merchant' subPath='Dishes'></BreadCrumb>
+					<BreadCrumb path='Dishes'></BreadCrumb>
 
 					<Divider />
 
@@ -81,4 +81,4 @@ const MerchantContainer: FC = () => {
 	);
 };
 
-export default MerchantContainer;
+export default DishesContainer;

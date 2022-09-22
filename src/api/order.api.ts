@@ -1,17 +1,11 @@
 import axios from './api';
-import moment from 'moment';
-import { ListOrderResponse, OrderModalResponse } from '../types/User';
-import { DateTimeFormat, RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
-const { MMDDYYYYhhmmA } = DateTimeFormat;
+import { ListOrderResponse, OrderModalResponse } from '../types/Order';
+import { RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
 
 export async function getOrders(body: any) {
 	try {
-		const { data: response } = await axios.post<ListOrderResponse>(`${RootApiEndpoint}/order/get-list-order`, { ...body }, DefaulHttpOption);
-		const orderData = {
-			...response,
-			data: response.data.map(item => ({ ...item, createdDate: moment(item.createdDate).format(MMDDYYYYhhmmA), updatedDate: moment(item.updatedDate).format(MMDDYYYYhhmmA), originalUpdatedDate: item.updatedDate }))
-		};
-		return orderData;
+		const { data } = await axios.post<ListOrderResponse>(`${RootApiEndpoint}/order/get-list-order`, { ...body }, DefaulHttpOption);
+		return data;
 	} catch (err: any) {
 		throw err;
 	}

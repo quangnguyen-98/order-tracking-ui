@@ -7,9 +7,7 @@ import { useAppDispatch, useAppSelector } from '../../../redux/hook';
 import {
 	onChangeOrderFormValue, resetData, updateOrder, createOrder, getAllDishes, onChangeDishesSelectOption, onChangedishesQuantity
 } from './reducer';
-import { OrderStatuses } from '../../../types/User';
-
-import './styles.scss';
+import { OrderStatuses } from '../../../types/Order';
 
 const { Option } = Select;
 
@@ -105,7 +103,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Status:</h6>
 				</Col>
 				<Col span={20}>
-					<Select className="text-start" value={data!.status?.toString()} style={{ width: '100%' }} size={'large'} disabled={!isEdit} onChange={(value) => {
+					<Select className="text-start" value={data!.status?.toString()} style={{ width: '100%' }} size={'large'} disabled={loading || !isEdit} onChange={(value) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'status', value: value }));
 					}}>
 						{OrderStatuses.map(item => (
@@ -120,7 +118,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Order Name:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.orderName} size="large" placeholder="Order Name" onChange={(e) => {
+					<Input disabled={loading} value={data!.orderName} size="large" placeholder="Order Name" onChange={(e) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'orderName', value: e.target.value }));
 					}}
 					/>
@@ -132,7 +130,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Address:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.address} size="large" placeholder="Address" onChange={(e) => {
+					<Input disabled={loading} value={data!.address} size="large" placeholder="Address" onChange={(e) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'address', value: e.target.value }));
 					}}
 					/>
@@ -144,7 +142,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Merchant Name:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.merchantName} size="large" placeholder="Merchant Name" onChange={(e) => {
+					<Input disabled={loading} value={data!.merchantName} size="large" placeholder="Merchant Name" onChange={(e) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'merchantName', value: e.target.value }));
 					}}
 					/>
@@ -156,7 +154,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Merchant Address:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.merchantAddress} size="large" placeholder="Merchant Address" onChange={(e) => {
+					<Input disabled={loading} value={data!.merchantAddress} size="large" placeholder="Merchant Address" onChange={(e) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'merchantAddress', value: e.target.value }));
 					}}
 					/>
@@ -168,7 +166,7 @@ const ModalCreateEditOrder = () => {
 					<h6>Rider Name:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!.riderName} size="large" placeholder="Rider Name" onChange={(e) => {
+					<Input disabled={loading} value={data!.riderName} size="large" placeholder="Rider Name" onChange={(e) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'riderName', value: e.target.value }));
 					}}
 					/>
@@ -193,15 +191,9 @@ const ModalCreateEditOrder = () => {
 					<h6>Add Dishes section:</h6>
 				</Col>
 				<Col span={20}>
-					{/* <Row className="text-start" justify="end" align="middle" gutter={[10, 10]}>
-						<Col span={8}><h6>Name:</h6></Col>
-						<Col span={6}><h6>Price:</h6></Col>
-						<Col span={6}><h6>Number:</h6></Col>
-						<Col span={4}></Col>
-					</Row> */}
 					<Row className="text-start" justify="end" align="middle" gutter={[10, 10]}>
 						<Col span={8}>
-							<Select value={selectedDishes} style={{ width: '100%' }} size="large" placeholder="Select Dishes" onChange={onChangeDishesSelect}>
+							<Select disabled={loading} value={selectedDishes} style={{ width: '100%' }} size="large" placeholder="Select Dishes" onChange={onChangeDishesSelect}>
 								{dishesOptionData.map(item => (
 									<Option key={item._id} value={item._id}>{item.name}</Option>
 								))}
@@ -213,12 +205,12 @@ const ModalCreateEditOrder = () => {
 							}} />
 						</Col>
 						<Col span={6}>
-							<Input type="number" min="1" value={dishesQuantity} size="large" placeholder="Quantity" onChange={(e) => {
+							<Input disabled={loading} type="number" min="1" value={dishesQuantity} size="large" placeholder="Quantity" onChange={(e) => {
 								dispatch(onChangedishesQuantity(Number(e.target.value)));
 							}} />
 						</Col>
 						<Col span={4}>
-							<Button type={'primary'} size="large" style={{ width: '100%' }} onClick={onAddDishesToOrder}>Add</Button>
+							<Button disabled={loading} type={'primary'} size="large" style={{ width: '100%' }} onClick={onAddDishesToOrder}>Add</Button>
 						</Col>
 					</Row>
 				</Col>
@@ -273,7 +265,7 @@ const ModalCreateEditOrder = () => {
 									</Col>
 
 									<Col className="text-start" span={4}>
-										<Button type={'primary'} danger style={{ width: '100%' }} size="large" onClick={() => { onRemoveDishesFromOrder(item._id); }}>Remove</Button>
+										<Button disabled={loading} type={'primary'} danger style={{ width: '100%' }} size="large" onClick={() => { onRemoveDishesFromOrder(item._id); }}>Remove</Button>
 									</Col>
 								</Row>
 							))}
@@ -289,7 +281,7 @@ const ModalCreateEditOrder = () => {
 					<Button size={'middle'} style={{ width: '100%' }} type={'primary'} loading={loading} onClick={() => { onSubmitData(); }}>{!isEdit ? 'Add' : 'Save'}</Button>
 				</Col>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} onClick={() => { dispatch(resetData()); }}>Close</Button>
+					<Button size={'middle'} style={{ width: '100%' }} disabled={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
 				</Col>
 			</Row>
 		</Modal>
