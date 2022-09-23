@@ -1,4 +1,4 @@
-import axios from './api';
+import axios from './axios.api';
 import { ListDishesResponse, DishesModalResponse } from '../types/Dishes';
 import { RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
 

@@ -1,11 +1,9 @@
 import { FC, useEffect } from 'react';
 import { Col, Divider, Row, Layout } from "antd";
 
-import { RootState } from '../../redux/store';
-import { updatePagination, fetchDishes, resetData, updateSort } from '../../components/Dishes/DishesTable/reducer';
 import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { openDishesModalEdit } from '../../components/Dishes/DishesModal/reducer';
-import { Dishes } from '../../types/Dishes';
+import { RootState } from '../../redux/store';
+import { updatePagination, fetchDishes, resetData } from '../../components/Dishes/DishesTable/reducer';
 
 import BreadCrumb from '../../sharedComponents/BreadCrumb';
 import Pagination from '../../sharedComponents/Pagination';
@@ -15,7 +13,7 @@ import DishesModal from '../../components/Dishes/DishesModal';
 const DishesContainer: FC = () => {
 	const dispatch = useAppDispatch();
 
-	const { data, loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
+	const { loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
 	const { isShow } = useAppSelector((state: RootState) => state.dishesPage.dishesModalReducer);
 	const { page, pageSize, totalItem } = pagination;
 
@@ -27,23 +25,23 @@ const DishesContainer: FC = () => {
 		dispatch(updatePagination({ ...pagination, page: 0, pageSize }));
 	};
 
-	const onOpenDishesModal = (isEdit: boolean, data: Dishes) => {
-		dispatch(openDishesModalEdit({ isEdit, data }));
-	};
-
-	const onUpdateSort = (value: any) => {
-		dispatch(updateSort(value));
-	};
-
 	useEffect(() => {
+		//Reload dishes table after 2 minutes
+		const timer = setInterval(() => {
+			dispatch(fetchDishes({ isShowLoading: false }));
+		}, 120000);
 		return () => {
+			// Reset data before unmount component 
 			dispatch(resetData());
+			//Clear timeout before unmount component
+			clearTimeout(timer);
 		};
 	}, []);
 
 	useEffect(() => {
-		dispatch(fetchDishes({ sort, filter, page, pageSize }, { isShowLoading: true }));
-	}, [sort, filter, page]);
+		dispatch(fetchDishes({ isShowLoading: true }));
+	}, [sort, filter, pagination.page]);
+
 
 	return (
 		<Layout style={{ background: 'white' }} className='container--main'>
@@ -54,13 +52,7 @@ const DishesContainer: FC = () => {
 
 					<Divider />
 
-					<DishesTable
-						sort={sort}
-						onUpdateSort={onUpdateSort}
-						data={data}
-						loading={loading}
-						onOpenDishesModal={onOpenDishesModal}
-					></DishesTable>
+					<DishesTable></DishesTable>
 
 					<Divider />
 

@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { AppThunk } from '../../../redux/store';
-import { Pagination } from '../../../types/Common';
+
 import { defaultPageSize } from '../../../constants/appConstant';
+
+import { Pagination } from '../../../types/Common';
 import { Order, ListOrderResponse } from '../../../types/Order';
 
 import { getOrders } from '../../../api/order.api';
@@ -82,12 +84,13 @@ export const {
 
 export default orderTable.reducer;
 
-export const fetchOrder = (params: any | {}, options: any | { isShowLoading: true; }): AppThunk => async dispatch => {
+export const fetchOrder = (options: any | { isShowLoading: true; }): AppThunk => async (dispatch, getState) => {
     try {
         if (options.isShowLoading) {
             dispatch(getOrderStart());
         }
-        const orderData = await getOrders(params);
+        const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
+        const orderData = await getOrders({ page, pageSize, sort, filter });
         dispatch(getOrderSuccess({ data: orderData }));
     } catch (err: any) {
         notification.error({ message: err.message });

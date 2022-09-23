@@ -2,29 +2,32 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 import { AppThunk } from '../../../redux/store';
 
+import { DashboardResponse } from '../../../types/Common';
+
 import { getDashboard } from '../../../api/dashboard.api';
 
-interface DishesState {
-	orderByStatus: any;
-	orderByTiming: any;
+export interface DashboardPayload {
+	data: DashboardResponse;
+};
+interface DashboardState {
+	countOrderByStatus: number;
+	countOrderByTiming: number;
+	orderByStatusChart: any;
+	orderByTimingChart: any;
 	loading: boolean;
 	error: string | null;
 };
 
-const initialState: DishesState = {
-	orderByStatus: {
-		count: 0,
-		chartData: {
-			labels: [],
-			series: []
-		}
+const initialState: DashboardState = {
+	countOrderByStatus: 0,
+	countOrderByTiming: 0,
+	orderByStatusChart: {
+		labels: [],
+		series: []
 	},
-	orderByTiming: {
-		count: 0,
-		chartData: {
-			labels: [],
-			series: []
-		}
+	orderByTimingChart: {
+		labels: [],
+		series: []
 	},
 	loading: false,
 	error: null
@@ -38,10 +41,12 @@ const dishesTable = createSlice({
 			state.loading = true;
 			state.error = null;
 		},
-		getDashboardSuccess(state, action: PayloadAction<any>) {
+		getDashboardSuccess(state, action: PayloadAction<DashboardPayload>) {
 			const { data } = action.payload;
-			state.orderByStatus = data.orderByStatus;
-			state.orderByTiming = data.orderByTiming;
+			state.countOrderByStatus = data.countOrderByStatus;
+			state.countOrderByTiming = data.countOrderByTiming;
+			state.orderByStatusChart = data.orderByStatusChart;
+			state.orderByTimingChart = data.orderByTimingChart;
 			state.loading = false;
 			state.error = null;
 		},
@@ -63,11 +68,14 @@ export const {
 } = dishesTable.actions;
 export default dishesTable.reducer;
 
-export const fetchDashboard = (): AppThunk => async dispatch => {
+export const fetchDashboard = (options: any): AppThunk => async dispatch => {
 	try {
-		dispatch(getDashboardStart());
-		const dashboard = await getDashboard();
-		dispatch(getDashboardSuccess({ data: dashboard }));
+		if (options.isShowLoading) {
+			dispatch(getDashboardStart());
+		}
+
+		const dashboardData = await getDashboard();
+		dispatch(getDashboardSuccess({ data: dashboardData }));
 	} catch (err: any) {
 		notification.error({ message: err.message });
 		dispatch(getDishesFailure(err));

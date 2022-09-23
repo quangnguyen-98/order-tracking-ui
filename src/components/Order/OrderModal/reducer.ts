@@ -1,11 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
+
+import { AppThunk } from '../../../redux/store';
+import { fetchOrder } from '../OrderTable/reducer';
+
+import { OrderStatuses } from '../../../constants/appConstant';
+
+import { UpdateFormValuePayload } from '../../../types/Common';
+import { Dishes, DishesPayload } from '../../../types/Dishes';
+import { Order } from '../../../types/Order';
+
 import { postOrders, putOrders } from '../../../api/order.api';
 import { getDishes } from '../../../api/dishes.api';
-import { Order } from '../../../types/Order';
-import { fetchOrder } from '../OrderTable/reducer';
-import { AppThunk } from '../../../redux/store';
-import { Dishes, DishesPayload } from '../../../types/Dishes';
+
+const { CREATED } = OrderStatuses;
+
 
 interface OderModalState {
 	isShow: boolean;
@@ -23,10 +32,6 @@ export interface OpenModalPayload {
 	data: Order;
 };
 
-export interface updateFormValuePayload {
-	fieldName: string;
-	value: any;
-};
 
 const initialState: OderModalState = {
 	isShow: false,
@@ -38,7 +43,7 @@ const initialState: OderModalState = {
 		merchantAddress: undefined,
 		merchantName: undefined,
 		riderName: undefined,
-		status: 'CREATED',
+		status: CREATED,
 		dishes: [],
 		totalPrice: 0,
 		createdDate: null,
@@ -79,7 +84,7 @@ const orderModal = createSlice({
 			state.isEdit = isEdit;
 			state.data = data;
 		},
-		onChangeOrderFormValue(state, action: PayloadAction<updateFormValuePayload>) {
+		onChangeOrderFormValue(state, action: PayloadAction<UpdateFormValuePayload>) {
 			const { fieldName, value } = action.payload;
 			switch (fieldName) {
 				case 'address':
@@ -157,23 +162,21 @@ export const createOrder = (options: any | {}): AppThunk => async (dispatch, get
 		notification.success({ message: 'Created order successfully' });
 		dispatch(createOrderSuccess());
 
-		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
-		dispatch(fetchOrder({ sort, filter, page, pageSize }, { isShowLoading: false }));
+		dispatch(fetchOrder({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
 	}
 };
 
-export const updateOrder = (options: any | {}): AppThunk => async (dispatch, getState) => {
+export const updateOrder = (options: any | {}): AppThunk => async (dispatch) => {
 	try {
 		dispatch(createUpdateOrderStart());
 		await putOrders(options);
 		dispatch(updateOrderSuccess());
 		notification.success({ message: 'Updated order successfully' });
-
-		const { pagination: { page, pageSize }, sort, filter } = getState().orderPage.orderReducer;
-		dispatch(fetchOrder({ sort, filter, page, pageSize }, { isShowLoading: false }));
+		
+		dispatch(fetchOrder({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));

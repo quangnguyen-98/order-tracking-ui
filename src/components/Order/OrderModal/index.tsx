@@ -2,12 +2,14 @@ import { useEffect } from 'react';
 import {
 	Button, Col, Divider, Input, Modal, Row, Select, Empty, notification
 } from "antd";
+
 import { formatMoney } from '../../../utils/stringUtils';
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
 import {
 	onChangeOrderFormValue, resetData, updateOrder, createOrder, getAllDishes, onChangeDishesSelectOption, onChangedishesQuantity
 } from './reducer';
-import { OrderStatuses } from '../../../types/Order';
+
+import { OrderStatusesList } from '../../../types/Order';
 
 const { Option } = Select;
 
@@ -106,7 +108,7 @@ const ModalCreateEditOrder = () => {
 					<Select className="text-start" value={data!.status?.toString()} style={{ width: '100%' }} size={'large'} disabled={loading || !isEdit} onChange={(value) => {
 						dispatch(onChangeOrderFormValue({ fieldName: 'status', value: value }));
 					}}>
-						{OrderStatuses.map(item => (
+						{OrderStatusesList.map(item => (
 							<Option key={item.value} value={item.value}>{item.displayName}</Option>
 						))}
 					</Select>
@@ -210,7 +212,7 @@ const ModalCreateEditOrder = () => {
 							}} />
 						</Col>
 						<Col span={4}>
-							<Button disabled={loading} type={'primary'} size="large" style={{ width: '100%' }} onClick={onAddDishesToOrder}>Add</Button>
+							<Button className="baemin__button" disabled={loading} type={'primary'} size="large" style={{ width: '100%' }} onClick={onAddDishesToOrder}>Add</Button>
 						</Col>
 					</Row>
 				</Col>
@@ -265,7 +267,7 @@ const ModalCreateEditOrder = () => {
 									</Col>
 
 									<Col className="text-start" span={4}>
-										<Button disabled={loading} type={'primary'} danger style={{ width: '100%' }} size="large" onClick={() => { onRemoveDishesFromOrder(item._id); }}>Remove</Button>
+										<Button disabled={loading} type={'primary'} danger size="large" onClick={() => { onRemoveDishesFromOrder(item._id); }}>Remove</Button>
 									</Col>
 								</Row>
 							))}
@@ -278,10 +280,10 @@ const ModalCreateEditOrder = () => {
 
 			<Row gutter={[10, 0]} justify={'end'}>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} type={'primary'} loading={loading} onClick={() => { onSubmitData(); }}>{!isEdit ? 'Add' : 'Save'}</Button>
+					<Button className="baemin__button" size={'middle'} type={'primary'} loading={loading} onClick={() => { onSubmitData(); }}>{!isEdit ? 'Add' : 'Save'}</Button>
 				</Col>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} disabled={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
+					<Button size={'middle'} disabled={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
 				</Col>
 			</Row>
 		</Modal>

@@ -1,9 +1,10 @@
-import axios from './api';
-import { RootApiEndpoint} from '../constants/appConstant';
+import axios from './axios.api';
+import { DashboardResponse } from '../types/Common';
+import { RootApiEndpoint } from '../constants/appConstant';
 
 export async function getDashboard() {
 	try {
-		const { data } = await axios.get<any>(`${RootApiEndpoint}/dashboard`);
+		const { data } = await axios.get<DashboardResponse>(`${RootApiEndpoint}/dashboard`);
 		return data;
 	} catch (err: any) {
 		throw err;

@@ -1,6 +1,7 @@
 import {
 	Button, Col, Divider, Input, Modal, Row, notification
 } from "antd";
+
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
 import {
 	onChangeDishesFormValue, resetData, updateDishes, createDishes
@@ -85,11 +86,11 @@ const ModalCreateEditDishes = () => {
 
 			<Row gutter={[10, 0]} justify={'end'}>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} type={'primary'} loading={loading} onClick={() => { onSubmitData(); }}>{!isEdit ? 'Add' : 'Save'}
+					<Button className="baemin__button" size={'middle'} type={'primary'} loading={loading} onClick={() => { onSubmitData(); }}>{!isEdit ? 'Add' : 'Save'}
 					</Button>
 				</Col>
 				<Col>
-					<Button size={'middle'} style={{ width: '100%' }} loading={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
+					<Button size={'middle'} loading={loading} onClick={() => { dispatch(resetData()); }}>Close</Button>
 				</Col>
 			</Row>
 		</Modal>

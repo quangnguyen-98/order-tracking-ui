@@ -1,4 +1,4 @@
-import axios from './api';
+import axios from './axios.api';
 import { ListOrderResponse, OrderModalResponse } from '../types/Order';
 import { RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
 

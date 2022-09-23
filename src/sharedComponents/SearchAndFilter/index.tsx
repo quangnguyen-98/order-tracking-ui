@@ -2,13 +2,21 @@ import { useState, useCallback } from 'react';
 import { Col, Row, Popover, Button, Input, Checkbox } from 'antd';
 import { debounce } from 'lodash';
 
+import { getPastISODateByMinutes } from '../../utils/stringUtils';
+
+import { OrderStatuses, LateStatuses } from '../../constants/appConstant';
+
+
+const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING } = OrderStatuses;
+const { last5min, last10min, last15min, warningOrder, lateOrder } = LateStatuses;
+
 const { Search } = Input;
 type SearchAndFilterProps = {
 	filter: any;
 	searchField: string;
 	filterOptions: any;
 	placeholder: string;
-	onSearch: Function;
+	onUpdateFilter: Function;
 };
 
 const SearchAndFilter = (props: SearchAndFilterProps) => {
@@ -19,21 +27,54 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 		const { filter } = props;
 		if (selectedItem.value) {
 			switch (selectedItem.key) {
-				case 'last5min':
+				case last5min:
 					return {
 						...filter,
-						updatedDate: { "$gt": new Date(new Date().getTime() - (1000 * 60 * 5)).toISOString() }
+						updatedDate: { "$gte": getPastISODateByMinutes(5) }
 					};
-				case 'last10min':
+				case last10min:
 					return {
 						...filter,
-						updatedDate: { "$gt": new Date(new Date().getTime() - (1000 * 60 * 10)).toISOString() }
+						updatedDate: { "$gte": getPastISODateByMinutes(10) }
 					};
-				case 'last15min':
+				case last15min:
 					return {
 						...filter,
-						updatedDate: { "$gt": new Date(new Date().getTime() - (1000 * 60 * 15)).toISOString() }
+						updatedDate: { "$gte": getPastISODateByMinutes(15) }
 					};
+				case warningOrder: {
+					delete filter.updatedDate;
+					return {
+						...filter,
+						'$or': [
+							{
+								status: { '$in': [DELIVERING] },
+								updatedDate: { "$gte": getPastISODateByMinutes(40), "$lt": getPastISODateByMinutes(30) }
+							},
+							{
+								status: { '$in': [CREATED, ACCEPTED, DRIVERASSIGNED] },
+								updatedDate: { "$gte": getPastISODateByMinutes(15), "$lt": getPastISODateByMinutes(10) },
+							},
+						]
+					};
+				}
+				case lateOrder: {
+					delete filter.updatedDate;
+					return {
+						...filter,
+						'$or': [
+							{
+
+								status: { '$in': [DELIVERING] },
+								updatedDate: { "$lt": getPastISODateByMinutes(40) }
+							},
+							{
+								status: { '$in': [CREATED, ACCEPTED, DRIVERASSIGNED] },
+								updatedDate: { "$lt": getPastISODateByMinutes(15) },
+							},
+						]
+					};
+				}
 				default:
 					return {
 						...filter,
@@ -50,20 +91,21 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 		selectedItem.value = !selectedItem.value;
 		setFilterOptions(newFilter);
 
-		props.onSearch(handleFilterByPreviousTime(selectedItem));
+		props.onUpdateFilter(handleFilterByPreviousTime(selectedItem));
 	};
 
 	const content = (
-		<Row style={{ width: '100%', height: '90px', fontWeight: 'bold' }}>
+		<Row className={'ignor-margin'} style={{ width: '100%', height: 'auto', fontWeight: 'bold' }}>
 			<Col span={24}>
-				{filterOptions.map((item: any) => (
-					<Row key={item.key}> <Checkbox checked={item.value} onChange={() => { onChangeFilterOption(item); }}>{item.displayName}</Checkbox></Row>
+				{filterOptions.map((item: any, index: number) => (
+					<Row key={item.key} className={index === (filterOptions.length - 1) ? 'ignor-margin' : ''}> <Checkbox checked={item.value} onChange={() => { onChangeFilterOption(item); }}>{item.displayName}</Checkbox></Row>
 				))}
 			</Col>
 		</Row>
 	);
 
-	const onSearchUsingDebounce = useCallback(debounce((value) => props.onSearch(value), 800), []);
+	// Wait 800ms before call api seach
+	const onSearchUsingDebounce = useCallback(debounce((value) => props.onUpdateFilter(value), 800), []);
 
 	const onChangeSearchValue = (event: any) => {
 		const { filter, searchField } = props;
@@ -90,7 +132,7 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 			</Col>
 			<Col span={2}>
 				<Popover placement="bottomRight" content={content} trigger="click">
-					<Button style={{ width: '100%' }}>Filter</Button>
+					<Button>Filter</Button>
 				</Popover>
 			</Col>
 		</Row>

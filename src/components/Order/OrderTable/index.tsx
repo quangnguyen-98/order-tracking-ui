@@ -3,63 +3,38 @@ import {
 	Button, Col, Empty, message, Row, Skeleton, Tag, Divider
 } from "antd";
 import { Table } from 'reactstrap';
-import { useAppDispatch } from '../../../redux/hook';
+
 import { formatMoney, formatDateTime } from '../../../utils/stringUtils';
+import { OrderStatuses, LateStatuses } from '../../../constants/appConstant';
+
+import { RootState } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { openOrderModalCreate, openOrderModalEdit } from '../../Order/OrderModal/reducer';
+import { updateSort, updateFilter } from '../../Order/OrderTable/reducer';
+
 import { Order } from '../../../types/Order';
-import { openOrderModalCreate } from '../../Order/OrderModal/reducer';
 
 import ColumnHeader from '../../../sharedComponents/ColumnHeader';
 import SearchAndFilter from '../../../sharedComponents/SearchAndFilter';
 
+const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING, DONE, CANCELED } = OrderStatuses;
+const { last5min, last10min, last15min, warningOrder, lateOrder } = LateStatuses;
 
-interface OrderTableProps {
-	data: Order[];
-	loading: boolean;
-	sort: any;
-	filter: any;
-	onUpdateSort: Function;
-	onUpdateFilter: Function;
-	onOpenOrderModal: Function;
-}
-
-const OrderTable = (props: OrderTableProps) => {
-	const { data, loading, onOpenOrderModal, sort, onUpdateSort, filter } = props;
+const OrderTable = () => {
 	const dispatch = useAppDispatch();
 
-	const getStatusTag = (item: string | null) => {
-		let color = '';
-		let displayName = '';
-		switch (item) {
-			case 'CREATED':
-				color = '#fa8c16';
-				displayName = 'Created';
-				break;
-			case 'ACCEPTED':
-				color = '#1890ff';
-				displayName = 'Accepted';
-				break;
-			case 'DRIVERASSIGNED':
-				color = '#13c2c2';
-				displayName = 'Driver Assigned';
-				break;
-			case 'DELIVERING':
-				color = '#1d39c4';
-				displayName = 'Delivering';
-				break;
-			case 'DONE':
-				color = '#389e0d';
-				displayName = 'Done';
-				break;
-			case 'CANCELED':
-				color = '#f5222d';
-				displayName = 'Canceled';
-				break;
-			default:
-				color = '#fa8c16';
-				displayName = 'Canceled';
-				break;
-		}
-		return <Tag style={{ width: '100%', textAlign: 'center' }} color={color}>{displayName}</Tag>;
+	const { data, loading, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderReducer);
+
+	const onOpenOrderModal = (isEdit: boolean, data: Order) => {
+		dispatch(openOrderModalEdit({ isEdit, data }));
+	};
+
+	const onUpdateSort = (value: any) => {
+		dispatch(updateSort(value));
+	};
+
+	const onUpdateFilter = (value: any) => {
+		dispatch(updateFilter(value));
 	};
 
 	const renderLateStatusTag = (color: any, title: any) => <Tag style={{ width: '100%', textAlign: 'center' }} color={color}>{title}</Tag>;
@@ -68,59 +43,57 @@ const OrderTable = (props: OrderTableProps) => {
 		let currentDate = new Date().getTime();
 		let itemDate = new Date(item.statusUpdatedDate).getTime();
 		let diffTime = ((currentDate - itemDate) / 1000 / 60);
-		if (item.status === 'DONE') {
-			return null;
-		}
 
-		let color = '';
-		let title = '';
+		let color = '#52c41a';
+		let title = 'Normal';
 
-		if (item.status === 'DELIVERING') {
+		if ([DELIVERING].includes(item.status)) {
 			if (diffTime > 40) {
-				color = '#cf1322';
-				title = 'Late order';
-				return renderLateStatusTag(color, title);
+				return renderLateStatusTag('#cf1322', 'Late');
 			};
 			if (diffTime > 30) {
-				color = '#ffc53d';
-				title = 'Warning order';
-				return renderLateStatusTag(color, title);
+				return renderLateStatusTag('#ffc53d', 'Warning');
 			};
-		} else {
+			return renderLateStatusTag(color, title);
+		} else if ([CREATED, ACCEPTED, DRIVERASSIGNED].includes(item.status)) {
 			if (diffTime > 15) {
-				color = '#cf1322';
-				title = 'Late order';
-				return renderLateStatusTag(color, title);
+				return renderLateStatusTag('#cf1322', 'Late');
 			};
 			if (diffTime > 10) {
-				color = '#ffc53d';
-				title = 'Warning order';
-				return renderLateStatusTag(color, title);
+				return renderLateStatusTag('#ffc53d', 'Warning');
 			};
-
+			return renderLateStatusTag(color, title);
+		} else if ([DONE, CANCELED].includes(item.status)) {
+			return null;
+		} else {
+			return renderLateStatusTag(color, title);
 		}
-
-		return null;
-	};
-
-	const onSearch = (value: any) => {
-		props.onUpdateFilter(value);
 	};
 
 	const filterOptions = [
 		{
-			key: 'last5min',
+			key: last5min,
 			displayName: 'Updated within the last 5 minutes',
 			value: false
 		},
 		{
-			key: 'last10min',
+			key: last10min,
 			displayName: 'Updated within the last 10 minutes',
 			value: false
 		},
 		{
-			key: 'last15min',
+			key: last15min,
 			displayName: 'Updated within the last 15 minutes',
+			value: false
+		},
+		{
+			key: warningOrder,
+			displayName: 'Warning order',
+			value: false
+		},
+		{
+			key: lateOrder,
+			displayName: 'Late order',
 			value: false
 		}
 	];
@@ -128,13 +101,13 @@ const OrderTable = (props: OrderTableProps) => {
 	return (
 		<>
 			<Row>
-				<Col span={4}><Button style={{ width: '100%' }} className="baemin__button" type="primary" onClick={() => { dispatch(openOrderModalCreate()); }}>Create new order</Button></Col>
+				<Col span={4}><Button className="baemin__button" type="primary" onClick={() => { dispatch(openOrderModalCreate()); }}>Create new order</Button></Col>
 				<Col span={20}></Col>
 			</Row>
 
 			<Divider />
 
-			<SearchAndFilter placeholder={'Search by Order name'} filterOptions={filterOptions} searchField={'orderName'} filter={filter} onSearch={onSearch}></SearchAndFilter>
+			<SearchAndFilter placeholder={'Search by Order name'} filterOptions={filterOptions} searchField={'orderName'} filter={filter} onUpdateFilter={onUpdateFilter}></SearchAndFilter>
 
 			<Divider />
 
@@ -149,7 +122,7 @@ const OrderTable = (props: OrderTableProps) => {
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='riderName' columnCaption='Rider Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='totalPrice' columnCaption='Total Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='status' columnCaption='Status'></ColumnHeader>
-								<ColumnHeader columnCaption='Warning/Late'></ColumnHeader>
+								<ColumnHeader columnCaption='Late Status'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='statusUpdatedDate' columnCaption='Status Updated Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
@@ -180,9 +153,7 @@ const OrderTable = (props: OrderTableProps) => {
 														<td className="align-middle">{formatDateTime(item.createdDate)}</td>
 														<td className="align-middle">{formatDateTime(item.updatedDate)}</td>
 														<td className="align-middle">
-															<Button onClick={() => {
-																onOpenOrderModal(true, item);
-															}}> <i className="far fa-edit" />
+															<Button onClick={() => { onOpenOrderModal(true, item); }}> <i className="far fa-edit" />
 															</Button>
 														</td>
 													</tr>
@@ -215,6 +186,42 @@ const OrderTable = (props: OrderTableProps) => {
 			}
 		</>
 	);
+};
+
+const getStatusTag = (item: string | null) => {
+	let color = '';
+	let displayName = '';
+	switch (item) {
+		case CREATED:
+			color = '#fa8c16';
+			displayName = 'Created';
+			break;
+		case ACCEPTED:
+			color = '#1890ff';
+			displayName = 'Accepted';
+			break;
+		case DRIVERASSIGNED:
+			color = '#13c2c2';
+			displayName = 'Driver Assigned';
+			break;
+		case DELIVERING:
+			color = '#1d39c4';
+			displayName = 'Delivering';
+			break;
+		case DONE:
+			color = '#389e0d';
+			displayName = 'Done';
+			break;
+		case CANCELED:
+			color = '#f5222d';
+			displayName = 'Canceled';
+			break;
+		default:
+			color = '#fa8c16';
+			displayName = 'Canceled';
+			break;
+	}
+	return <Tag style={{ width: '100%', textAlign: 'center' }} color={color}>{displayName}</Tag>;
 };
 
 export default OrderTable;

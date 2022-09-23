@@ -1,28 +1,30 @@
 import { Pagination } from '../Common';
+import { OrderStatuses } from '../../constants/appConstant';
+const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING, DONE, CANCELED } = OrderStatuses;
 
-export const OrderStatuses = [
+export const OrderStatusesList = [
   {
-    value: 'CREATED',
+    value: CREATED,
     displayName: 'Created'
   },
   {
-    value: 'ACCEPTED',
+    value: ACCEPTED,
     displayName: 'Accepted'
   },
   {
-    value: 'DRIVERASSIGNED',
+    value: DRIVERASSIGNED,
     displayName: 'Driver Assigned'
   },
   {
-    value: 'DELIVERING',
+    value: DELIVERING,
     displayName: 'Delivering'
   },
   {
-    value: 'DONE',
+    value: DONE,
     displayName: 'Done'
   },
   {
-    value: 'CANCELED',
+    value: CANCELED,
     displayName: 'Canceled'
   }
 ];

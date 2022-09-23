@@ -5,24 +5,31 @@ import {
 import { Table } from 'reactstrap';
 
 import { formatMoney, formatDateTime } from '../../../utils/stringUtils';
-import { useAppDispatch } from '../../../redux/hook';
-import { openDishesModalCreate } from '../DishesModal/reducer';
+
+import { RootState } from '../../../redux/store';
+import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+
+import { openDishesModalCreate, openDishesModalEdit } from '../DishesModal/reducer';
+import { updateSort } from './reducer';
 
 import { Dishes } from '../../../types/Dishes';
 
 import ColumnHeader from '../../../sharedComponents/ColumnHeader';
 
-interface DishesTableProps {
-	data: Dishes[];
-	loading: boolean;
-	sort: any;
-	onUpdateSort: Function;
-	onOpenDishesModal: Function;
-}
-
-const DishesTable = (props: DishesTableProps) => {
-	const { data, loading, onOpenDishesModal, sort, onUpdateSort } = props;
+const DishesTable = () => {
 	const dispatch = useAppDispatch();
+
+	const { data, loading, sort } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
+
+	const onOpenDishesModal = (isEdit: boolean, data: Dishes) => {
+		dispatch(openDishesModalEdit({ isEdit, data }));
+	};
+
+	const onUpdateSort = (value: any) => {
+		dispatch(updateSort(value));
+	};
+
+
 	return (
 		<>
 			<Row>

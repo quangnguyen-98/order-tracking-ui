@@ -1,3 +1,4 @@
+// Api config ============================
 const environment = process.env.NODE_ENV;
 
 let ApiEndpoint = null;
@@ -15,6 +16,26 @@ switch (environment) {
 }
 
 export const RootApiEndpoint = ApiEndpoint;
+
+
+// Constant ==============================
+
+export const OrderStatuses = {
+	CREATED: 'CREATED',
+	ACCEPTED: 'ACCEPTED',
+	DRIVERASSIGNED: 'DRIVERASSIGNED',
+	DELIVERING: 'DELIVERING',
+	DONE: 'DONE',
+	CANCELED: 'CANCELED'
+};
+
+export const LateStatuses = {
+	last5min: 'last5min',
+	last10min: 'last10min',
+	last15min: 'last15min',
+	warningOrder: 'warningOrderG',
+	lateOrder: 'lateOrder'
+};
 
 export const DateTimeFormat = {
 	MMDDYYYYhhmmA: 'MM/DD/YYYY hh:mm A'

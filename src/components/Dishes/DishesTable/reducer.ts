@@ -76,12 +76,13 @@ export const {
 } = dishesTable.actions;
 export default dishesTable.reducer;
 
-export const fetchDishes = (params: any | {}, options: any | { isShowLoading: true; }): AppThunk => async dispatch => {
+export const fetchDishes = (options: any | { isShowLoading: true; }): AppThunk => async (dispatch, getState) => {
 	try {
 		if (options.isShowLoading) {
 			dispatch(getDishesStart());
 		}
-		const dishesData = await getDishes(params);
+		const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
+		const dishesData = await getDishes({ page, pageSize, sort, filter });
 		dispatch(getDishesSuccess({ data: dishesData }));
 	} catch (err: any) {
 		notification.error({ message: err.message });

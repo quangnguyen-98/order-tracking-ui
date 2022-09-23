@@ -15,7 +15,6 @@ const MainContainer: FC = () => {
 	const location = useLocation();
 	const [collapsed, setCollapsed] = useState(false);
 
-
 	const getActiveRoute = (pathName: any): any => {
 		switch (pathName) {
 			case '/':
@@ -32,59 +31,56 @@ const MainContainer: FC = () => {
 	const route = getActiveRoute(location.pathname);
 
 	return (
-		<div>
-			<Layout>
-				<Sider trigger={null} theme="light" width={200} className="site-layout-background" collapsible collapsed={collapsed}>
-					<Menu
-						mode="inline"
-						defaultSelectedKeys={['1']}
-						selectedKeys={route}
-						items={[
-							{
-								key: '1',
-								icon: <NavLink to="/" className="nav-link"><i className="fas fa-chart-line"></i></NavLink>,
-								label: 'Dashboard',
-							},
-							{
-								key: '2',
-								icon: <NavLink to="/order" className="nav-link"><i className="fa-solid fa-file-invoice-dollar"></i></NavLink>,
-								label: 'Order',
-							},
-							{
-								key: '3',
-								icon: <NavLink to="/dishes" className="nav-link"><i className="fa-solid fa-burger"></i></NavLink>,
-								label: 'Dishes',
-							},
-						]}
-					/>
-				</Sider>
-				<Layout className="site-layout" style={{ padding: '0 24px 24px' }}>
-					<Header className="site-layout-background">
-						<Row>
-							<Col span={24}>
-								<span style={{ fontWeight: 'bold' }}>
-									{collapsed
-										? (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-right"></i></Button>)
-										: (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-left"></i></Button>)}
-									<span>&nbsp;&nbsp;BAEMIN ORDER TRACKING SERVICE</span>
-								</span>
-							</Col>
-						</Row>
-					</Header>
+		<Layout>
+			<Sider trigger={null} theme="light" width={200} className="site-layout-background" collapsible collapsed={collapsed}>
+				<Menu
+					mode="inline"
+					defaultSelectedKeys={['1']}
+					selectedKeys={route}
+					items={[
+						{
+							key: '1',
+							icon: <NavLink to="/" className="nav-link"><i className="fas fa-chart-line"></i></NavLink>,
+							label: 'Dashboard',
+						},
+						{
+							key: '2',
+							icon: <NavLink to="/order" className="nav-link"><i className="fa-solid fa-file-invoice-dollar"></i></NavLink>,
+							label: 'Order',
+						},
+						{
+							key: '3',
+							icon: <NavLink to="/dishes" className="nav-link"><i className="fa-solid fa-burger"></i></NavLink>,
+							label: 'Dishes',
+						},
+					]}
+				/>
+			</Sider>
+			<Layout className="site-layout" style={{ padding: '0 24px 0 24px' }}>
+				<Header className="site-layout-background">
+					<Row>
+						<Col span={1}><span>{collapsed
+							? (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-right"></i></Button>)
+							: (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-left"></i></Button>)}</span></Col>
+						<Col span={23}>
+							<span style={{ fontWeight: 'bold' }}>
+								<span>&nbsp;<img style={{ marginBottom: '5px', marginRight: '5px' }} src="/favicon.ico" alt="favicon" width="30px" height="30px" />BAEMIN ORDER TRACKING SERVICE</span>
+							</span>
+						</Col>
+					</Row>
+				</Header>
 
-					<Content className="site-layout-background" style={{ padding: 0, marginTop: 15, minHeight: 280 }}
-					>
-						<Routes>
-							<Route path="/" element={<DashboardContainer />}></Route>
-							<Route path="/order" element={<OrderContainer />}></Route>
-							<Route path="/dishes" element={<DishesContainer />}></Route>
-							<Route path='*' element={<NotFoundContainer />} />
-						</Routes>
-					</Content>
-				</Layout>
+				<Content className="site-layout-background" style={{ padding: 0, marginTop: 15, minHeight: 280 }}
+				>
+					<Routes>
+						<Route path="/" element={<DashboardContainer />}></Route>
+						<Route path="/order" element={<OrderContainer />}></Route>
+						<Route path="/dishes" element={<DishesContainer />}></Route>
+						<Route path='*' element={<NotFoundContainer />} />
+					</Routes>
+				</Content>
 			</Layout>
-		</div>
-
+		</Layout>
 	);
 };
 

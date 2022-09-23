@@ -1,140 +1,59 @@
 import { FC, useEffect } from 'react';
-import { Col, Row, Empty, Skeleton } from 'antd';
-import { Container } from "reactstrap";
-import ApexChart from 'react-apexcharts';
-import { ApexOptions } from 'apexcharts';
+import { useNavigate } from "react-router-dom";
+import { Row, Col, Button } from 'antd';
 
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
-import {
-  fetchDashboard
-} from './reducer';
+import { fetchDashboard, resetData } from './reducer';
+
+import BaseChart from '../../../sharedComponents/BaseChart';
 
 const Chart: FC = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { orderByStatus, orderByTiming, loading } = useAppSelector(state => state.chartReducer);
-
+  const { countOrderByStatus, countOrderByTiming, orderByStatusChart, orderByTimingChart, loading } = useAppSelector(state => state.chartReducer);
 
   useEffect(() => {
-    dispatch(fetchDashboard());
+    dispatch(fetchDashboard({ isShowLoading: true }));
+
+    //Reload dashboard infor after 2 minutes
+    const timmer = setInterval(() => {
+      dispatch(fetchDashboard({ isShowLoading: false }));
+    }, 120000);
+
+    return () => {
+      // Reset data before unmount component 
+      dispatch(resetData());
+      //Clear timeout before unmount component
+      clearTimeout(timmer);
+    };
   }, []);
-
-  const optionsA: ApexOptions = {
-    chart: {
-      type: 'donut',
-      zoom: {
-        enabled: true
-      }
-    },
-    dataLabels: {
-      enabled: true
-    },
-    labels: orderByStatus.chartData.labels,
-    stroke: {
-      curve: 'straight'
-    },
-  };
-
-  const optionsB: ApexOptions = {
-    chart: {
-      type: 'donut',
-      zoom: {
-        enabled: true
-      }
-    },
-    dataLabels: {
-      enabled: true
-    },
-    labels: orderByTiming.chartData.labels,
-    stroke: {
-      curve: 'straight'
-    },
-  };
 
   return (
     <>
-      <Row>
+      <Row gutter={[10, 10]}>
         <Col span={24}>
-          <Row style={{ backgroundColor: '#f0f2f4', paddingTop: 7, paddingBottom: 3 }}>
-            <Container>
-              <div className={'h4 font-weight-bold text-dark'}>Total/Current number of orders by status</div>
-            </Container>
-          </Row>
-          <Row style={{ paddingTop: 10 }}>
-            <Col span={24}>
-              {!loading
-                ? <>
-                  {
-                    orderByStatus.chartData.series.length > 0 && (
-                      <ApexChart
-                        options={optionsA}
-                        series={orderByStatus.chartData.series}
-                        type="donut"
-                        width={'100%'}
-                        height={250}
-                      />
-                    )
-                  }
-                  {
-                    orderByStatus.chartData.series.length === 0 && (
-                      <Row justify={'center'} style={{ height: '30%' }}>
-                        <Col>
-                          <Empty
-                            description={<span>No data found</span>}
-                          />
-                        </Col>
-                      </Row>
-                    )
-                  }
-                </>
-                : <Skeleton active />
-              }
-            </Col>
+          <Row>
+            <Button style={{ height: 60 }} onClick={() => { navigate("/order"); }}>
+              <span style={{ fontWeight: 'bold' }}>Total number of orders by status:</span>
+              <h4 className={'text-primary'}>{countOrderByStatus}</h4>
+            </Button>
           </Row>
         </Col>
       </Row>
 
-      <Row>
+      <BaseChart loading={loading} chartData={orderByStatusChart} chartTitle={'Current number of orders by status:'} chartName={'Order by status'} ></BaseChart>
+
+      <Row gutter={[10, 10]}>
         <Col span={24}>
-          <Row style={{ backgroundColor: '#f0f2f4', paddingTop: 7, paddingBottom: 3 }}>
-            <Container>
-              <div className={'h4 font-weight-bold text-dark'}>Total/Current number of orders by status</div>
-            </Container>
-          </Row>
-          <Row style={{ paddingTop: 10 }}>
-            <Col span={24}>
-              {!loading
-                ? <>
-                  {
-                    orderByStatus.chartData.series.length > 0 && (
-                      <ApexChart
-                        options={optionsB}
-                        series={orderByStatus.chartData.series}
-                        type="donut"
-                        width={'100%'}
-                        height={250}
-                      />
-                    )
-                  }
-                  {
-                    orderByStatus.chartData.series.length === 0 && (
-                      <Row justify={'center'} style={{ height: '30%' }}>
-                        <Col>
-                          <Empty
-                            description={<span>No data found</span>}
-                          />
-                        </Col>
-                      </Row>
-                    )
-                  }
-                </>
-                : <Skeleton active />
-              }
-            </Col>
+          <Row>
+            <Button style={{ height: 70 }} onClick={() => { navigate("/order"); }}>
+              <span style={{ fontWeight: 'bold' }}>Total number of orders by timing:</span>
+              <h4 className={'text-primary'}>{countOrderByTiming}</h4>
+            </Button>
           </Row>
         </Col>
       </Row>
-
-
+      <BaseChart loading={loading} chartData={orderByTimingChart} chartTitle={'Current number of orders by timing:'} chartName={'Order by timing'} ></BaseChart>
     </>
 
   );
