@@ -1,13 +1,13 @@
-import { useState, FC } from 'react';
+import { FC, useState, lazy, Suspense } from 'react';
 import { Routes, Route, NavLink, useLocation } from "react-router-dom";
-import { Button, Col, Row, Layout, Menu } from 'antd';
-
-import OrderContainer from '../Order';
-import DishesContainer from '../Dishes';
-import DashboardContainer from '../Dashboard';
-import NotFoundContainer from '../NotFound';
+import { Button, Col, Row, Layout, Menu, Spin } from 'antd';
 
 import './styles.scss';
+
+const OrderContainer = lazy(() => import('../Order'));
+const DishesContainer = lazy(() => import('../Dishes'));
+const DashboardContainer = lazy(() => import('../Dashboard'));
+const NotFoundContainer = lazy(() => import('../NotFound'));
 
 const { Header, Content, Sider } = Layout;
 
@@ -73,15 +73,19 @@ const MainContainer: FC = () => {
 				<Content className="site-layout-background" style={{ padding: 0, marginTop: 15, minHeight: 280 }}
 				>
 					<Routes>
-						<Route path="/" element={<DashboardContainer />}></Route>
-						<Route path="/order" element={<OrderContainer />}></Route>
-						<Route path="/dishes" element={<DishesContainer />}></Route>
-						<Route path='*' element={<NotFoundContainer />} />
+						<Route path="/" element={<Suspense fallback={<Spinner></Spinner>}><DashboardContainer /></Suspense>}></Route>
+						<Route path="/order" element={<Suspense fallback={<Spinner></Spinner>}><OrderContainer /></Suspense>}></Route>
+						<Route path="/dishes" element={<Suspense fallback={<Spinner></Spinner>}><DishesContainer /></Suspense>}></Route>
+						<Route path="*" element={<Suspense fallback={<Spinner></Spinner>}><NotFoundContainer /></Suspense>}></Route>
 					</Routes>
 				</Content>
 			</Layout>
 		</Layout>
 	);
+};
+
+const Spinner: FC = () => {
+	return <Spin style={{ position: 'fixed', top: '50%', left: '50%' }} size="large" />;
 };
 
 export default MainContainer;
