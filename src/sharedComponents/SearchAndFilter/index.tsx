@@ -124,7 +124,7 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 	return (
 		<Row>
 			<Col span={4}>
-				<Search value={searchValue} placeholder={props.placeholder} style={{ width: '100%' }} onChange={onChangeSearchValue} />
+				<Search disabled={props.loading} value={searchValue} placeholder={props.placeholder} style={{ width: '100%' }} onChange={onChangeSearchValue} />
 			</Col>
 			<Col span={18}>
 
