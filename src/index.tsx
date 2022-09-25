@@ -8,7 +8,6 @@ import store from './redux/store';
 import App from './App';
 
 import './index.scss';
-import './common/commonStyles.scss';
 import 'antd/dist/antd.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

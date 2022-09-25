@@ -1,4 +1,4 @@
-import { formatDateTime, formatMoney } from './stringUtils';
+import { formatDateTime, formatMoney } from './appUtils';
 
 describe('formatDateTime()', () => {
     it('Should be convert ISO String date to String date', () => {

@@ -10,11 +10,10 @@ import { UpdateFormValuePayload } from '../../../types/Common';
 import { Dishes, DishesPayload } from '../../../types/Dishes';
 import { Order } from '../../../types/Order';
 
-import { postOrders, putOrders } from '../../../api/order.api';
+import { postOrders, putOrders, putPaymentStatus } from '../../../api/order.api';
 import { getDishes } from '../../../api/dishes.api';
 
 const { CREATED } = OrderStatuses;
-
 
 interface OderModalState {
 	isShow: boolean;
@@ -46,6 +45,7 @@ const initialState: OderModalState = {
 		status: CREATED,
 		dishes: [],
 		totalPrice: 0,
+		wasPurchasedOnline: false,
 		createdDate: null,
 		updatedDate: null,
 		statusUpdatedDate: null
@@ -155,10 +155,10 @@ export const {
 export default orderModal.reducer;
 
 //Acsync Action
-export const createOrder = (options: any | {}): AppThunk => async (dispatch, getState) => {
+export const createOrder = (data: any | {}): AppThunk => async (dispatch, getState) => {
 	try {
 		dispatch(createUpdateOrderStart());
-		await postOrders(options);
+		await postOrders(data);
 		notification.success({ message: 'Created order successfully' });
 		dispatch(createOrderSuccess());
 
@@ -169,13 +169,13 @@ export const createOrder = (options: any | {}): AppThunk => async (dispatch, get
 	}
 };
 
-export const updateOrder = (options: any | {}): AppThunk => async (dispatch) => {
+export const updateOrder = (data: any | {}): AppThunk => async (dispatch) => {
 	try {
 		dispatch(createUpdateOrderStart());
-		await putOrders(options);
+		await putOrders(data);
 		dispatch(updateOrderSuccess());
 		notification.success({ message: 'Updated order successfully' });
-		
+
 		dispatch(fetchOrder({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
@@ -197,5 +197,22 @@ export const getAllDishes = (): AppThunk => async (dispatch, getState) => {
 
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
+	}
+};
+
+
+export const updatePaymentStatus = (): AppThunk => async (dispatch, getState) => {
+	try {
+		const { data: { _id } } = getState().orderPage.orderModalReducer;
+		dispatch(createUpdateOrderStart());
+		await putPaymentStatus({ _id, status: true });
+		dispatch(updateOrderSuccess());
+		dispatch(onChangeOrderFormValue({ fieldName: 'wasPurchasedOnline', value: true }));
+		notification.success({ message: `Purchase order succesfully!` });
+
+		dispatch(fetchOrder({ isShowLoading: false }));
+	} catch (err: any) {
+		notification.error({ message: err.response.data.message || err.message });
+		dispatch(createUpdateOrderFailure(err));
 	}
 };

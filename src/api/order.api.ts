@@ -28,3 +28,12 @@ export async function putOrders(body: any) {
 		throw err;
 	}
 }
+
+export async function putPaymentStatus(body: any) {
+	try {
+		const { data: response } = await axios.put<OrderModalResponse>(`${RootApiEndpoint}/order/paymentstatus`, { ...body }, DefaulHttpOption);
+		return response;
+	} catch (err: any) {
+		throw err;
+	}
+}

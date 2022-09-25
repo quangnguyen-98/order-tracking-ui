@@ -3,7 +3,7 @@ import { Layout, Result } from 'antd';
 
 const NotFound: FC = () => {
 	return (
-		<Layout style={{ background: 'white' }} className='container--main'>
+		<Layout style={{ background: 'white' }} className='container__main'>
 
 			<Result
 				status="404"

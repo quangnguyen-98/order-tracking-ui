@@ -44,7 +44,7 @@ const DishesContainer: FC = () => {
 
 
 	return (
-		<Layout style={{ background: 'white' }} className='container--main'>
+		<Layout style={{ background: 'white' }} className='container__main'>
 			<Row className='container__dishes'>
 
 				<Col span={24}>
