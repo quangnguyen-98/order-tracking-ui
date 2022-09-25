@@ -52,10 +52,8 @@ const ModalCreateEditOrder = () => {
 			return notification.error({ message: 'The quantity must be equal or greater than 1!' });
 		}
 
-		const existedDishes = data.dishes.find(item => item._id === selectedDishes);
-		if (existedDishes) {
-			return notification.error({ message: 'This dishes already exists on order list!' });
-		}
+		let currentDishes = data.dishes;
+		currentDishes = currentDishes.filter(item => item._id !== selectedDishes);
 
 		let selectedDishesValue = dishesOptionData.find(item => item._id === selectedDishes);
 
@@ -65,7 +63,7 @@ const ModalCreateEditOrder = () => {
 		}];
 
 		const mappedData = [
-			...data.dishes,
+			...currentDishes,
 			...selectedDishesValueWithQuantityMapped
 		].map(item => ({
 			_id: item._id,
