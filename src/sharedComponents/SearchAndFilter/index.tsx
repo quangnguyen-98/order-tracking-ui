@@ -2,17 +2,16 @@ import { useState, useCallback } from 'react';
 import { Col, Row, Popover, Button, Input, Checkbox } from 'antd';
 import { debounce } from 'lodash';
 
-import { getPastISODateByMinutes } from '../../utils/stringUtils';
-
-import { OrderStatuses, LateStatuses } from '../../constants/appConstant';
-
+import { getPastISODateByMinutes } from '../../utils/appUtils';
+import { OrderStatuses, filterOptions } from '../../constants/appConstant';
 
 const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING } = OrderStatuses;
-const { last5min, last10min, last15min, warningOrder, lateOrder } = LateStatuses;
+const { last5min, last10min, last15min, warningOrder, lateOrder } = filterOptions;
 
 const { Search } = Input;
 type SearchAndFilterProps = {
 	filter: any;
+	loading: boolean;
 	searchField: string;
 	filterOptions: any;
 	placeholder: string;
@@ -98,7 +97,7 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 		<Row className={'ignor-margin'} style={{ width: '100%', height: 'auto', fontWeight: 'bold' }}>
 			<Col span={24}>
 				{filterOptions.map((item: any, index: number) => (
-					<Row key={item.key} className={index === (filterOptions.length - 1) ? 'ignor-margin' : ''}> <Checkbox checked={item.value} onChange={() => { onChangeFilterOption(item); }}>{item.displayName}</Checkbox></Row>
+					<Row key={item.key} className={index === (filterOptions.length - 1) ? 'ignor-margin' : ''}> <Checkbox disabled={props.loading} checked={item.value} onChange={() => { onChangeFilterOption(item); }}>{item.displayName}</Checkbox></Row>
 				))}
 			</Col>
 		</Row>

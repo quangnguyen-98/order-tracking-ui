@@ -4,7 +4,7 @@ import {
 } from "antd";
 import { Table } from 'reactstrap';
 
-import { formatMoney, formatDateTime } from '../../../utils/stringUtils';
+import { formatMoney, formatDateTime } from '../../../utils/appUtils';
 
 import { RootState } from '../../../redux/store';
 import { useAppDispatch, useAppSelector } from '../../../redux/hook';
