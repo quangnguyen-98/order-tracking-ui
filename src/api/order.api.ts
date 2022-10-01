@@ -1,39 +1,22 @@
 import axios from './axios.api';
 import { ListOrderResponse, OrderModalResponse } from '../types/Order';
-import { RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
 
 export async function getOrders(body: any) {
-	try {
-		const { data } = await axios.post<ListOrderResponse>(`${RootApiEndpoint}/order/get-list-order`, { ...body }, DefaulHttpOption);
+		const { data } = await axios.post<ListOrderResponse>(`/order/get-list-order`, { ...body });
 		return data;
-	} catch (err: any) {
-		throw err;
-	}
 }
 
 export async function postOrders(body: any) {
-	try {
-		const { data: response } = await axios.post<OrderModalResponse>(`${RootApiEndpoint}/order`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.post<OrderModalResponse>(`/order`, { ...body });
 		return response;
-	} catch (err: any) {
-		throw err;
-	}
 }
 
 export async function putOrders(body: any) {
-	try {
-		const { data: response } = await axios.put<OrderModalResponse>(`${RootApiEndpoint}/order`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.put<OrderModalResponse>(`/order`, { ...body });
 		return response;
-	} catch (err: any) {
-		throw err;
-	}
 }
 
 export async function putPaymentStatus(body: any) {
-	try {
-		const { data: response } = await axios.put<OrderModalResponse>(`${RootApiEndpoint}/order/paymentstatus`, { ...body }, DefaulHttpOption);
+		const { data: response } = await axios.put<OrderModalResponse>(`/order/paymentstatus`, { ...body });
 		return response;
-	} catch (err: any) {
-		throw err;
-	}
 }

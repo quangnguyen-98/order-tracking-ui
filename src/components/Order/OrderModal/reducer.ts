@@ -154,7 +154,7 @@ export const {
 } = orderModal.actions;
 export default orderModal.reducer;
 
-//Acsync Action
+//Async Action
 export const createOrder = (data: any | {}): AppThunk => async (dispatch, getState) => {
 	try {
 		dispatch(createUpdateOrderStart());

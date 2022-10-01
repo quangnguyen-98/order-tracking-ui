@@ -1,7 +1,7 @@
 // Api config ============================
 const environment = process.env.NODE_ENV;
 
-let ApiEndpoint = null;
+let ApiEndpoint = '';
 
 switch (environment) {
 	case 'development':
