@@ -98,7 +98,7 @@ export const {
 } = dishesModal.actions;
 export default dishesModal.reducer;
 
-//Acsync Action
+//Async Action
 export const createDishes = (options: any | {}): AppThunk => async (dispatch) => {
 	try {
 		dispatch(createUpdateDishesStart());

@@ -24,27 +24,28 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 
 	const handleFilterByPreviousTime = (selectedItem: any) => {
 		const { filter } = props;
+		const newFilter = { ...filter };
 		if (selectedItem.value) {
 			switch (selectedItem.key) {
 				case last5min:
 					return {
-						...filter,
+						...newFilter,
 						updatedDate: { "$gte": getPastISODateByMinutes(5) }
 					};
 				case last10min:
 					return {
-						...filter,
+						...newFilter,
 						updatedDate: { "$gte": getPastISODateByMinutes(10) }
 					};
 				case last15min:
 					return {
-						...filter,
+						...newFilter,
 						updatedDate: { "$gte": getPastISODateByMinutes(15) }
 					};
 				case warningOrder: {
-					delete filter.updatedDate;
+					if (newFilter.updatedDate) delete newFilter.updatedDate;
 					return {
-						...filter,
+						...newFilter,
 						'$or': [
 							{
 								status: { '$in': [DELIVERING] },
@@ -58,9 +59,9 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 					};
 				}
 				case lateOrder: {
-					delete filter.updatedDate;
+					if (newFilter.updatedDate) delete newFilter.updatedDate;
 					return {
-						...filter,
+						...newFilter,
 						'$or': [
 							{
 
@@ -76,7 +77,7 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 				}
 				default:
 					return {
-						...filter,
+						...newFilter,
 					};
 			}
 		} else {
