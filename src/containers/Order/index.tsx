@@ -1,19 +1,18 @@
 import { FC, useEffect } from 'react';
-import { RootState } from '../../redux/store';
 import { Col, Divider, Row, Layout } from "antd";
 
-import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { updatePagination, fetchOrder, resetData } from '../../components/Order/OrderTable/reducer';
+import { RootState } from '~/redux/store';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
+import { updatePagination, fetchOrders, resetData } from '~/components/Order/OrderTable/reducer';
 
-import BreadCrumb from '../../sharedComponents/BreadCrumb';
-import Pagination from '../../sharedComponents/Pagination';
-import OrderTable from '../../components/Order/OrderTable';
-import OrderModal from '../../components/Order/OrderModal';
+import { BreadCrumb, Pagination } from '~/sharedComponents';
+import OrderTable from '~/components/Order/OrderTable';
+import OrderModal from '~/components/Order/OrderModal';
 
 const UserContainer: FC = () => {
 	const dispatch = useAppDispatch();
 
-	const { loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderReducer);
+	const { loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderTableReducer);
 	const { isShow } = useAppSelector((state: RootState) => state.orderPage.orderModalReducer);
 	const { page, pageSize, totalItem } = pagination;
 
@@ -28,7 +27,7 @@ const UserContainer: FC = () => {
 	useEffect(() => {
 		// Reload order table after 2 minutes
 		const timer = setInterval(() => {
-			dispatch(fetchOrder({ isShowLoading: false }));
+			dispatch(fetchOrders({ isShowLoading: false, isAutoFetching: true }));
 		}, 120000);
 
 		return () => {
@@ -40,7 +39,7 @@ const UserContainer: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(fetchOrder({ isShowLoading: true }));
+		dispatch(fetchOrders({ isShowLoading: true }));
 	}, [sort, filter, pagination.page]);
 
 	return (
@@ -63,11 +62,9 @@ const UserContainer: FC = () => {
 						onChangePage={onChangePage}
 						onChangePageSize={onChangePageSize}
 					/>
-
 				</Col>
 			</Row>
 			{isShow && (<OrderModal></OrderModal>)}
-
 		</Layout>
 	);
 };

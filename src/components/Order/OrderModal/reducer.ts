@@ -1,36 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
 
-import { AppThunk } from '../../../redux/store';
-import { fetchOrder } from '../OrderTable/reducer';
+import { AppThunk } from '~/redux/store';
+import { fetchOrders } from '../OrderTable/reducer';
 
-import { OrderStatuses } from '../../../constants/appConstant';
+import { UpdateFormValuePayload } from '~/types/Common';
+import { DishTablePayload } from '~/types/Dish';
+import { OderModalState, OpenOrderModalPayload } from '~/types/Order';
 
-import { UpdateFormValuePayload } from '../../../types/Common';
-import { Dishes, DishesPayload } from '../../../types/Dishes';
-import { Order } from '../../../types/Order';
-
-import { postOrders, putOrders, putPaymentStatus } from '../../../api/order.api';
-import { getDishes } from '../../../api/dishes.api';
-
-const { CREATED } = OrderStatuses;
-
-interface OderModalState {
-	isShow: boolean;
-	isEdit: boolean;
-	data: Order;
-	dishesOptionData: Dishes[];
-	selectedDishes: string | undefined;
-	dishesQuantity: number | undefined;
-	loading: boolean;
-	error: string | null;
-};
-
-export interface OpenModalPayload {
-	isEdit: boolean;
-	data: Order;
-};
-
+import { postOrder, putOrder, putOderPaymentStatus } from '~/api/order.api';
+import { getDishes } from '~/api/dishes.api';
 
 const initialState: OderModalState = {
 	isShow: false,
@@ -42,7 +21,7 @@ const initialState: OderModalState = {
 		merchantAddress: undefined,
 		merchantName: undefined,
 		riderName: undefined,
-		status: CREATED,
+		status: 'CREATED',
 		dishes: [],
 		totalPrice: 0,
 		wasPurchasedOnline: false,
@@ -62,7 +41,7 @@ const orderModal = createSlice({
 	name: 'orderModal',
 	initialState,
 	reducers: {
-		getAllDishesSuccess(state, action: PayloadAction<DishesPayload>) {
+		getAllDishesSuccess(state, action: PayloadAction<DishTablePayload>) {
 			const { data } = action.payload;
 
 			state.dishesOptionData = data.data;
@@ -78,7 +57,7 @@ const orderModal = createSlice({
 			state.isShow = true;
 			state.isEdit = false;
 		},
-		openOrderModalEdit(state, action: PayloadAction<OpenModalPayload>) {
+		openOrderModalEdit(state, action: PayloadAction<OpenOrderModalPayload>) {
 			const { isEdit, data } = action.payload;
 			state.isShow = true;
 			state.isEdit = isEdit;
@@ -158,11 +137,11 @@ export default orderModal.reducer;
 export const createOrder = (data: any | {}): AppThunk => async (dispatch, getState) => {
 	try {
 		dispatch(createUpdateOrderStart());
-		await postOrders(data);
+		await postOrder(data);
 		notification.success({ message: 'Created order successfully' });
 		dispatch(createOrderSuccess());
 
-		dispatch(fetchOrder({ isShowLoading: false }));
+		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
@@ -172,17 +151,16 @@ export const createOrder = (data: any | {}): AppThunk => async (dispatch, getSta
 export const updateOrder = (data: any | {}): AppThunk => async (dispatch) => {
 	try {
 		dispatch(createUpdateOrderStart());
-		await putOrders(data);
+		await putOrder(data);
 		dispatch(updateOrderSuccess());
 		notification.success({ message: 'Updated order successfully' });
 
-		dispatch(fetchOrder({ isShowLoading: false }));
+		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
 	}
 };
-
 
 export const getAllDishes = (): AppThunk => async (dispatch, getState) => {
 	try {
@@ -200,17 +178,16 @@ export const getAllDishes = (): AppThunk => async (dispatch, getState) => {
 	}
 };
 
-
 export const updatePaymentStatus = (): AppThunk => async (dispatch, getState) => {
 	try {
 		const { data: { _id } } = getState().orderPage.orderModalReducer;
 		dispatch(createUpdateOrderStart());
-		await putPaymentStatus({ _id, status: true });
+		await putOderPaymentStatus({ _id, status: true });
 		dispatch(updateOrderSuccess());
 		dispatch(onChangeOrderFormValue({ fieldName: 'wasPurchasedOnline', value: true }));
 		notification.success({ message: `Purchase order succesfully!` });
 
-		dispatch(fetchOrder({ isShowLoading: false }));
+		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
 		dispatch(createUpdateOrderFailure(err));

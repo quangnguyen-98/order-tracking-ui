@@ -1,7 +1,9 @@
-import { Col, Row, Empty, Skeleton, Button } from 'antd';
+import { Col, Row, Skeleton, Button } from 'antd';
 import { useNavigate } from "react-router-dom";
 import ApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
+
+import { Empty } from '~/sharedComponents';
 
 type BaseChartProps = {
 	loading: boolean;
@@ -71,13 +73,7 @@ const BaseChart = (props: BaseChartProps) => {
 									}
 									{
 										chartData.series.length === 0 && (
-											<Row justify={'center'} style={{ height: '150px' }}>
-												<Col>
-													<Empty
-														description={<span>No data found</span>}
-													/>
-												</Col>
-											</Row>
+											<Empty description={'No data found'} />
 										)
 									}
 								</>

@@ -1,29 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { AppThunk } from '../../../redux/store';
-import { fetchDishes } from '../DishesTable/reducer';
 
-import { UpdateFormValuePayload } from '../../../types/Common';
-import { Dishes } from '../../../types/Dishes';
+import { AppThunk } from '~/redux/store';
+import { fetchDishes } from '../DishTable/reducer';
 
-import { postDishes, putDishes } from '../../../api/dishes.api';
+import { UpdateFormValuePayload } from '~/types/Common';
+import { DishModalState, OpenDishModalPayload } from '~/types/Dish';
 
+import { postDish, putDish } from '~/api/dishes.api';
 
-interface DishesModalState {
-	isShow: boolean;
-	isEdit: boolean;
-	data: Dishes;
-	loading: boolean;
-	error: string | null;
-};
-
-export interface OpenModalPayload {
-	isEdit: boolean;
-	data: Dishes;
-};
-
-
-const initialState: DishesModalState = {
+const initialState: DishModalState = {
 	isShow: false,
 	isEdit: false,
 	data: {
@@ -38,14 +24,14 @@ const initialState: DishesModalState = {
 };
 
 const dishesModal = createSlice({
-	name: 'dishesModal',
+	name: 'dishModal',
 	initialState,
 	reducers: {
-		openDishesModalCreate(state) {
+		openDishModalCreate(state) {
 			state.isShow = true;
 			state.isEdit = false;
 		},
-		openDishesModalEdit(state, action: PayloadAction<OpenModalPayload>) {
+		openDishModalEdit(state, action: PayloadAction<OpenDishModalPayload>) {
 			const { isEdit, data } = action.payload;
 			state.isShow = true;
 			state.isEdit = isEdit;
@@ -64,19 +50,19 @@ const dishesModal = createSlice({
 					break;
 			}
 		},
-		createUpdateDishesStart(state) {
+		createUpdateDishStart(state) {
 			state.loading = true;
 			state.error = null;
 		},
-		createDishesSuccess() {
+		createDishSuccess() {
 			return initialState;
 		},
-		updateDishesSuccess(state) {
+		updateDishSuccess(state) {
 			// state.loading = false;
 			// state.error = null;
 			return initialState;
 		},
-		createUpdateDishesFailure(state, action: PayloadAction<string>) {
+		createUpdateDishFailure(state, action: PayloadAction<string>) {
 			state.loading = false;
 			state.error = action.payload;
 		},
@@ -88,41 +74,41 @@ const dishesModal = createSlice({
 
 export const {
 	onChangeDishesFormValue,
-	openDishesModalCreate,
-	openDishesModalEdit,
-	createUpdateDishesStart,
-	createDishesSuccess,
-	updateDishesSuccess,
-	createUpdateDishesFailure,
+	openDishModalCreate,
+	openDishModalEdit,
+	createUpdateDishStart,
+	createDishSuccess,
+	updateDishSuccess,
+	createUpdateDishFailure,
 	resetData
 } = dishesModal.actions;
 export default dishesModal.reducer;
 
 //Async Action
-export const createDishes = (options: any | {}): AppThunk => async (dispatch) => {
+export const createDish = (options: any | {}): AppThunk => async (dispatch) => {
 	try {
-		dispatch(createUpdateDishesStart());
-		await postDishes(options);
+		dispatch(createUpdateDishStart());
+		await postDish(options);
 		notification.success({ message: 'Created dishes successfully' });
-		dispatch(createDishesSuccess());
+		dispatch(createDishSuccess());
 
 		dispatch(fetchDishes({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
-		dispatch(createUpdateDishesFailure(err));
+		dispatch(createUpdateDishFailure(err));
 	}
 };
 
-export const updateDishes = (options: any | {}): AppThunk => async (dispatch) => {
+export const updateDish = (options: any | {}): AppThunk => async (dispatch) => {
 	try {
-		dispatch(createUpdateDishesStart());
-		await putDishes(options);
-		dispatch(updateDishesSuccess());
+		dispatch(createUpdateDishStart());
+		await putDish(options);
+		dispatch(updateDishSuccess());
 		notification.success({ message: 'Updated dishes successfully' });
 
 		dispatch(fetchDishes({ isShowLoading: false }));
 	} catch (err: any) {
 		notification.error({ message: err.response.data.message || err.message });
-		dispatch(createUpdateDishesFailure(err));
+		dispatch(createUpdateDishFailure(err));
 	}
 };

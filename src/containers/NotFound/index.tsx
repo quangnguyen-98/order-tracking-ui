@@ -4,7 +4,6 @@ import { Layout, Result } from 'antd';
 const NotFound: FC = () => {
 	return (
 		<Layout style={{ background: 'white' }} className='container__main'>
-
 			<Result
 				status="404"
 				title="404"

@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { Layout, Col, Row } from 'antd';
 
-import Chart from '../../components/Dashboard/Chart';
-import BreadCrumb from '../../sharedComponents/BreadCrumb';
+import Chart from '~/components/Dashboard/Chart';
+import { BreadCrumb } from '~/sharedComponents';
 
 const Dashboard: FC = () => {
 	return (

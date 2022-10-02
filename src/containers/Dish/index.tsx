@@ -1,20 +1,19 @@
 import { FC, useEffect } from 'react';
 import { Col, Divider, Row, Layout } from "antd";
 
-import { useAppDispatch, useAppSelector } from '../../redux/hook';
-import { RootState } from '../../redux/store';
-import { updatePagination, fetchDishes, resetData } from '../../components/Dishes/DishesTable/reducer';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
+import { RootState } from '~/redux/store';
+import { updatePagination, fetchDishes, resetData } from '~/components/Dish/DishTable/reducer';
 
-import BreadCrumb from '../../sharedComponents/BreadCrumb';
-import Pagination from '../../sharedComponents/Pagination';
-import DishesTable from '../../components/Dishes/DishesTable';
-import DishesModal from '../../components/Dishes/DishesModal';
+import { BreadCrumb, Pagination } from '~/sharedComponents';
+import DishTable from '~/components/Dish/DishTable';
+import DishModal from '~/components/Dish/DishModal';
 
-const DishesContainer: FC = () => {
+const DishContainer: FC = () => {
 	const dispatch = useAppDispatch();
 
-	const { loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
-	const { isShow } = useAppSelector((state: RootState) => state.dishesPage.dishesModalReducer);
+	const { loading, pagination, sort, filter } = useAppSelector((state: RootState) => state.dishPage.dishTableReducer);
+	const { isShow } = useAppSelector((state: RootState) => state.dishPage.dishModalReducer);
 	const { page, pageSize, totalItem } = pagination;
 
 	const onChangePage = (page: number) => {
@@ -28,7 +27,7 @@ const DishesContainer: FC = () => {
 	useEffect(() => {
 		//Reload dishes table after 2 minutes
 		const timer = setInterval(() => {
-			dispatch(fetchDishes({ isShowLoading: false }));
+			dispatch(fetchDishes({ isShowLoading: false, isAutoFetching: true }));
 		}, 120000);
 		return () => {
 			// Reset data before unmount component 
@@ -42,7 +41,6 @@ const DishesContainer: FC = () => {
 		dispatch(fetchDishes({ isShowLoading: true }));
 	}, [sort, filter, pagination.page]);
 
-
 	return (
 		<Layout style={{ background: 'white' }} className='container__main'>
 			<Row className='container__dishes'>
@@ -52,7 +50,7 @@ const DishesContainer: FC = () => {
 
 					<Divider />
 
-					<DishesTable></DishesTable>
+					<DishTable></DishTable>
 
 					<Divider />
 
@@ -64,13 +62,12 @@ const DishesContainer: FC = () => {
 						onChangePage={onChangePage}
 						onChangePageSize={onChangePageSize}
 					/>
-
 				</Col>
 			</Row>
-			{isShow && (<DishesModal></DishesModal>)}
+			{isShow && (<DishModal></DishModal>)}
 
 		</Layout>
 	);
 };
 
-export default DishesContainer;
+export default DishContainer;

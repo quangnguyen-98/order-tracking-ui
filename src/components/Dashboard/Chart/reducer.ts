@@ -1,22 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { AppThunk } from '../../../redux/store';
 
-import { DashboardResponse } from '../../../types/Common';
+import { AppThunk } from '~/redux/store';
 
-import { getDashboard } from '../../../api/dashboard.api';
+import { DashboardPayload, DashboardState } from '~/types/Dashboard';
 
-export interface DashboardPayload {
-	data: DashboardResponse;
-};
-interface DashboardState {
-	countOrderByStatus: number;
-	countOrderByTiming: number;
-	orderByStatusChart: any;
-	orderByTimingChart: any;
-	loading: boolean;
-	error: string | null;
-};
+import { getDashboard } from '~/api/dashboard.api';
+
+
 
 const initialState: DashboardState = {
 	countOrderByStatus: 0,
@@ -81,3 +72,4 @@ export const fetchDashboard = (options: any): AppThunk => async dispatch => {
 		dispatch(getDishesFailure(err));
 	}
 };
+

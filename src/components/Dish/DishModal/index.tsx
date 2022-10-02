@@ -2,19 +2,19 @@ import {
 	Button, Col, Divider, Input, Modal, Row, notification
 } from "antd";
 
-import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
 import {
-	onChangeDishesFormValue, resetData, updateDishes, createDishes
+	onChangeDishesFormValue, resetData, updateDish, createDish
 } from './reducer';
 
-const ModalCreateEditDishes = () => {
+const ModalCreateEditDish = () => {
 	const dispatch = useAppDispatch();
-	const { isEdit, isShow, data, loading } = useAppSelector(state => state.dishesPage.dishesModalReducer);
+	const { isEdit, isShow, data, loading } = useAppSelector(state => state.dishPage.dishModalReducer);
 
 	const onSubmitData = () => {
 
 		if (!data.name) {
-			return notification.error({ message: 'Please enter dishes name!' });
+			return notification.error({ message: 'Please enter dish name!' });
 		}
 
 		if (!data.price || Number(data.price) <= 0) {
@@ -26,14 +26,14 @@ const ModalCreateEditDishes = () => {
 				name: data.name,
 				price: Number(data.price),
 			};
-			dispatch(createDishes(params));
+			dispatch(createDish(params));
 		} else {
 			let params = {
 				_id: data._id,
 				name: data.name,
 				price: Number(data.price),
 			};
-			dispatch(updateDishes(params));
+			dispatch(updateDish(params));
 		}
 	};
 
@@ -41,7 +41,7 @@ const ModalCreateEditDishes = () => {
 		<Modal
 			className={'modal__dishes'}
 			width={'80%'}
-			title={!isEdit ? 'Add Dishes' : 'Edit Dishes'}
+			title={!isEdit ? 'Add Dish' : 'Edit Dish'}
 			footer={null}
 			closable={false}
 			open={isShow}
@@ -49,20 +49,20 @@ const ModalCreateEditDishes = () => {
 		>
 			<Row className="text-end" justify="end" align="middle" gutter={[10, 10]}>
 				<Col span={4}>
-					<h6>Dishes Id:</h6>
+					<h6>Dish Id:</h6>
 				</Col>
 				<Col span={20}>
-					<Input value={data!._id} size="large" disabled placeholder="Dishes Id" />
+					<Input value={data!._id} size="large" disabled placeholder="Dish Id" />
 				</Col>
 			</Row>
 
 			<Row className="text-end" justify="end" align="middle" gutter={[10, 10]}>
 				<Col span={4}>
-					<h6>Dishes Name:</h6>
+					<h6>Dish Name:</h6>
 				</Col>
 				<Col span={20}>
 					<Input disabled={loading} value={data!.name} size="large"
-						placeholder="Dishes Name" onChange={(e) => {
+						placeholder="Dish Name" onChange={(e) => {
 							dispatch(onChangeDishesFormValue({ fieldName: 'name', value: e.target.value }));
 						}}
 					/>
@@ -97,4 +97,4 @@ const ModalCreateEditDishes = () => {
 	);
 };
 
-export default ModalCreateEditDishes;
+export default ModalCreateEditDish;

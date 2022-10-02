@@ -1,40 +1,38 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton, Divider
+	Button, Col, message, Row, Skeleton, Divider
 } from "antd";
 import { Table } from 'reactstrap';
 
-import { formatMoney, formatDateTime } from '../../../utils/appUtils';
+import { formatMoney, formatDateTime } from '~/utils/appUtils';
 
-import { RootState } from '../../../redux/store';
-import { useAppDispatch, useAppSelector } from '../../../redux/hook';
-
-import { openDishesModalCreate, openDishesModalEdit } from '../DishesModal/reducer';
+import { RootState } from '~/redux/store';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
+import { openDishModalCreate, openDishModalEdit } from '../DishModal/reducer';
 import { updateSort } from './reducer';
 
-import { Dishes } from '../../../types/Dishes';
+import { Dish } from '~/types/Dish';
 
-import ColumnHeader from '../../../sharedComponents/ColumnHeader';
+import { ColumnHeader, Empty } from '~/sharedComponents';
 
-const DishesTable = () => {
+const DishTable = () => {
 	const dispatch = useAppDispatch();
 
-	const { data, loading, sort } = useAppSelector((state: RootState) => state.dishesPage.dishesReducer);
+	const { data, loading, sort } = useAppSelector((state: RootState) => state.dishPage.dishTableReducer);
 
-	const onOpenDishesModal = (isEdit: boolean, data: Dishes) => {
-		dispatch(openDishesModalEdit({ isEdit, data }));
+	const onOpenDishesModal = (isEdit: boolean, data: Dish) => {
+		dispatch(openDishModalEdit({ isEdit, data }));
 	};
 
 	const onUpdateSort = (value: any) => {
 		dispatch(updateSort(value));
 	};
 
-
 	return (
 		<>
 			<Row>
 				<Col span={4}>
-					<Button className="baemin__button" type="primary" onClick={() => { dispatch(openDishesModalCreate()); }}>Create new dishes</Button>
+					<Button className="baemin__button" type="primary" onClick={() => { dispatch(openDishModalCreate()); }}>Create new dish</Button>
 				</Col>
 				<Col span={20}>
 				</Col>
@@ -44,12 +42,11 @@ const DishesTable = () => {
 
 			<Row justify={'center'}>
 				<Col span={24}>
-
 					<Table hover responsive>
 						<thead>
 							<tr>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Dishes Id'></ColumnHeader>
-								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='name' columnCaption='Dishes Name'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='_id' columnCaption='Dish Id'></ColumnHeader>
+								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='name' columnCaption='Dish Name'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='price' columnCaption='Price'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='createdDate' columnCaption='Created Date'></ColumnHeader>
 								<ColumnHeader loading={loading} sort={sort} onUpdateSort={onUpdateSort} columnName='updatedDate' columnCaption='Updated Date'></ColumnHeader>
@@ -97,18 +94,10 @@ const DishesTable = () => {
 				</Col>
 			</Row>
 			{
-				data.length === 0 && !loading && (
-					<Row justify={'center'} style={{ height: '30%' }}>
-						<Col>
-							<Empty
-								description={<span>No data found</span>}
-							/>
-						</Col>
-					</Row>
-				)
+				data.length === 0 && !loading && (<Empty description={'No dishes found'} />)
 			}
 		</>
 	);
 };
 
-export default DishesTable;
+export default DishTable;
