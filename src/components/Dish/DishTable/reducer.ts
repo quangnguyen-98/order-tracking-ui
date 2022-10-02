@@ -78,7 +78,7 @@ export const fetchDishes = (options: any | { isShowLoading: true; isAutoFetching
 		const dishesData = await getDishes({ page, pageSize, sort, filter });
 		dispatch(getDishesSuccess({ data: dishesData, isAutoFetching: options.isAutoFetching }));
 	} catch (err: any) {
-		notification.error({ message: err.message });
+		notification.error({ message: err.response.data.message || err.message });
 		dispatch(getDishesFailure(err));
 	}
 };
