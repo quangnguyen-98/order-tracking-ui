@@ -1,22 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { notification } from 'antd';
-import { AppThunk } from '../../../redux/store';
-import { Pagination } from '../../../types/Common';
-import { defaultPageSize } from '../../../constants/appConstant';
-import { Dishes, DishesPayload } from '../../../types/Dishes';
 
-import { getDishes } from '../../../api/dishes.api';
+import { AppThunk } from '~/redux/store';
+import { defaultPageSize } from '~/constants/appConstant';
 
-interface DishesState {
-	data: Dishes[];
-	pagination: Pagination;
-	sort: any,
-	filter: any,
-	loading: boolean;
-	error: string | null;
-};
+import { Pagination } from '~/types/Common';
+import { DishTableState, DishTablePayload } from '~/types/Dish';
 
-const initialState: DishesState = {
+import { getDishes } from '~/api/dishes.api';
+
+const initialState: DishTableState = {
 	data: [],
 	pagination: {
 		page: 0,
@@ -31,7 +24,7 @@ const initialState: DishesState = {
 };
 
 const dishesTable = createSlice({
-	name: 'dishesTable',
+	name: 'dishTable',
 	initialState,
 	reducers: {
 		updatePagination(state, action: PayloadAction<Pagination>) {
@@ -47,13 +40,13 @@ const dishesTable = createSlice({
 			state.loading = true;
 			state.error = null;
 		},
-		getDishesSuccess(state, action: PayloadAction<DishesPayload>) {
-			const { data } = action.payload;
+		getDishesSuccess(state, action: PayloadAction<DishTablePayload>) {
+			const { data, isAutoFetching } = action.payload;
 
 			state.data = data.data;
-			state.pagination = data.pagination;
 			state.loading = false;
 			state.error = null;
+			if (!isAutoFetching) { state.pagination = data.pagination; }
 		},
 		getDishesFailure(state, action: PayloadAction<string>) {
 			state.loading = false;
@@ -76,14 +69,14 @@ export const {
 } = dishesTable.actions;
 export default dishesTable.reducer;
 
-export const fetchDishes = (options: any | { isShowLoading: true; }): AppThunk => async (dispatch, getState) => {
+export const fetchDishes = (options: any | { isShowLoading: true; isAutoFetching: false; }): AppThunk => async (dispatch, getState) => {
 	try {
 		if (options.isShowLoading) {
 			dispatch(getDishesStart());
 		}
-		const { pagination: { page, pageSize }, sort, filter } = getState().dishesPage.dishesReducer;
+		const { pagination: { page, pageSize }, sort, filter } = getState().dishPage.dishTableReducer;
 		const dishesData = await getDishes({ page, pageSize, sort, filter });
-		dispatch(getDishesSuccess({ data: dishesData }));
+		dispatch(getDishesSuccess({ data: dishesData, isAutoFetching: options.isAutoFetching }));
 	} catch (err: any) {
 		notification.error({ message: err.message });
 		dispatch(getDishesFailure(err));

@@ -12,11 +12,11 @@ switch (environment) {
 		break;
 
 	default:
+		ApiEndpoint = 'http://localhost:3001/api/v1';
 		break;
 }
 
 export const RootApiEndpoint = ApiEndpoint;
-
 
 // Constant ==============================
 

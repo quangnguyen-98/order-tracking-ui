@@ -2,13 +2,14 @@ import { useState, useCallback } from 'react';
 import { Col, Row, Popover, Button, Input, Checkbox } from 'antd';
 import { debounce } from 'lodash';
 
-import { getPastISODateByMinutes } from '../../utils/appUtils';
-import { OrderStatuses, filterOptions } from '../../constants/appConstant';
+import { getPastISODateByMinutes } from '~/utils/appUtils';
+import { OrderStatuses, filterOptions } from '~/constants/appConstant';
 
 const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING } = OrderStatuses;
 const { last5min, last10min, last15min, warningOrder, lateOrder } = filterOptions;
 
 const { Search } = Input;
+
 type SearchAndFilterProps = {
 	filter: any;
 	loading: boolean;
@@ -83,7 +84,6 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 		} else {
 			return {};
 		}
-
 	};
 
 	const onChangeFilterOption = (selectedItem: any) => {

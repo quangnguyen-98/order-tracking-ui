@@ -1,21 +1,20 @@
 
 import {
-	Button, Col, Empty, message, Row, Skeleton, Tag, Divider
+	Button, Col, message, Row, Skeleton, Tag, Divider
 } from "antd";
 import { Table } from 'reactstrap';
 
-import { formatMoney, formatDateTime } from '../../../utils/appUtils';
-import { OrderStatuses, filterOptions, OrderStatusColor, LateStatus, LateStatusColor, OrderStatusesDisplayName } from '../../../constants/appConstant';
+import { formatMoney, formatDateTime } from '~/utils/appUtils';
+import { OrderStatuses, filterOptions, OrderStatusColor, LateStatus, LateStatusColor, OrderStatusesDisplayName } from '~/constants/appConstant';
 
-import { RootState } from '../../../redux/store';
-import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { RootState } from '~/redux/store';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
 import { openOrderModalCreate, openOrderModalEdit } from '../../Order/OrderModal/reducer';
 import { updateSort, updateFilter } from '../../Order/OrderTable/reducer';
 
-import { Order } from '../../../types/Order';
+import { Order } from '~/types/Order';
 
-import ColumnHeader from '../../../sharedComponents/ColumnHeader';
-import SearchAndFilter from '../../../sharedComponents/SearchAndFilter';
+import { ColumnHeader, SearchAndFilter, Empty } from '~/sharedComponents';
 
 const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING, DONE, CANCELED } = OrderStatuses;
 const { Created, Accepted, DriverAssigned, Delivering, Done, Canceled } = OrderStatusesDisplayName;
@@ -27,7 +26,7 @@ const { WarningColor, LateColor, NormalColor } = LateStatusColor;
 const OrderTable = () => {
 	const dispatch = useAppDispatch();
 
-	const { data, loading, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderReducer);
+	const { data, loading, sort, filter } = useAppSelector((state: RootState) => state.orderPage.orderTableReducer);
 
 	const onOpenOrderModal = (isEdit: boolean, data: Order) => {
 		dispatch(openOrderModalEdit({ isEdit, data }));
@@ -185,13 +184,7 @@ const OrderTable = () => {
 			</Row>
 			{
 				data.length === 0 && !loading && (
-					<Row justify={'center'} style={{ height: '30%' }}>
-						<Col>
-							<Empty
-								description={<span>No data found</span>}
-							/>
-						</Col>
-					</Row>
+					<Empty description={'No orders found'} />
 				)
 			}
 		</>

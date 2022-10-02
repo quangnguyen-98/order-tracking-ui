@@ -1,30 +1,29 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { reducer as form } from 'redux-form';
 
-import chartReducer from '../components/Dashboard/Chart/reducer';
+import dashboardChartReducer from '~/components/Dashboard/Chart/reducer';
 
-import dishesReducer from '../components/Dishes/DishesTable/reducer';
-import dishesModalReducer from '../components/Dishes/DishesModal/reducer';
+import dishTableReducer from '~/components/Dish/DishTable/reducer';
+import dishModalReducer from '~/components/Dish/DishModal/reducer';
 
-import orderReducer from '../components/Order/OrderTable/reducer';
-import orderModalReducer from '../components/Order/OrderModal/reducer';
+import orderTableReducer from '~/components/Order/OrderTable/reducer';
+import orderModalReducer from '~/components/Order/OrderModal/reducer';
 
-const dishesPage = combineReducers({
-  dishesReducer,
-  dishesModalReducer,
+const dishPage = combineReducers({
+  dishTableReducer,
+  dishModalReducer,
 });
 
 const orderPage = combineReducers({
-  orderReducer,
+  orderTableReducer,
   orderModalReducer
 });
 
 const rootReducer = combineReducers({
   form,
-  chartReducer,
-  dishesPage,
+  dashboardChartReducer,
+  dishPage,
   orderPage
-
 });
 
 export default rootReducer;

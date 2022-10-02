@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RootApiEndpoint, DefaulHttpOption } from '../constants/appConstant';
+import { RootApiEndpoint, DefaulHttpOption } from '~/constants/appConstant';
 
 export default axios.create({
   baseURL: RootApiEndpoint,

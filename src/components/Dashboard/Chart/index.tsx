@@ -1,13 +1,13 @@
 import { FC, useEffect } from 'react';
 
-import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
 import { fetchDashboard, resetData } from './reducer';
 
-import BaseChart from '../../../sharedComponents/BaseChart';
+import { BaseChart } from '~/sharedComponents';
 
 const Chart: FC = () => {
   const dispatch = useAppDispatch();
-  const { countOrderByStatus, countOrderByTiming, orderByStatusChart, orderByTimingChart, loading } = useAppSelector(state => state.chartReducer);
+  const { countOrderByStatus, countOrderByTiming, orderByStatusChart, orderByTimingChart, loading } = useAppSelector(state => state.dashboardChartReducer);
 
   useEffect(() => {
     dispatch(fetchDashboard({ isShowLoading: true }));
@@ -30,7 +30,6 @@ const Chart: FC = () => {
       <BaseChart loading={loading} countTitle={'Total number of orders by status:'} countOrderNumber={countOrderByStatus} chartData={orderByStatusChart} chartTitle={'Current number of orders by status:'} chartName={'Order by status'} ></BaseChart>
       <BaseChart loading={loading} countTitle={'Total number of orders by timing:'} countOrderNumber={countOrderByTiming} chartData={orderByTimingChart} chartTitle={'Current number of orders by timing:'} chartName={'Order by timing'} ></BaseChart>
     </>
-
   );
 };
 

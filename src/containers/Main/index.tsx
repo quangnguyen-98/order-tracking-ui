@@ -5,7 +5,7 @@ import { Button, Col, Row, Layout, Menu, Spin } from 'antd';
 import './styles.scss';
 
 const OrderContainer = lazy(() => import('../Order'));
-const DishesContainer = lazy(() => import('../Dishes'));
+const DishesContainer = lazy(() => import('../Dish'));
 const DashboardContainer = lazy(() => import('../Dashboard'));
 const NotFoundContainer = lazy(() => import('../NotFound'));
 
@@ -46,7 +46,7 @@ const MainContainer: FC = () => {
 						{
 							key: '2',
 							icon: <NavLink to="/order" className="nav-link"><i className="fa-solid fa-file-invoice-dollar"></i></NavLink>,
-							label: 'Order',
+							label: 'Orders',
 						},
 						{
 							key: '3',
@@ -59,10 +59,10 @@ const MainContainer: FC = () => {
 			<Layout className="site-layout" style={{ padding: '0 24px 0 24px' }}>
 				<Header className="site-layout-background">
 					<Row>
-						<Col span={1}><span>{collapsed
+						<Col xs={6} sm={3} md={1} lg={1}><span>{collapsed
 							? (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-right"></i></Button>)
 							: (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-left"></i></Button>)}</span></Col>
-						<Col span={23}>
+						<Col xs={18} sm={21} md={23} lg={23}>
 							<span style={{ fontWeight: 'bold' }}>
 								<span>&nbsp;<img style={{ marginBottom: '5px', marginRight: '5px' }} src="/favicon.ico" alt="favicon" width="30px" height="30px" />BAEMIN ORDER TRACKING SERVICE</span>
 							</span>
@@ -70,7 +70,7 @@ const MainContainer: FC = () => {
 					</Row>
 				</Header>
 
-				<Content className="site-layout-background" style={{ padding: 0, marginTop: 15, minHeight: 280 }}
+				<Content className="site-layout-background" style={{ overflow: 'scroll', padding: 0, marginTop: 15, minHeight: 280 }}
 				>
 					<Routes>
 						<Route path="/" element={<Suspense fallback={<Spinner></Spinner>}><DashboardContainer /></Suspense>}></Route>

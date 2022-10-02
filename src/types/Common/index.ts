@@ -1,10 +1,3 @@
-export interface DashboardResponse {
-	countOrderByStatus: number;
-	countOrderByTiming: number;
-	orderByStatusChart: any;
-	orderByTimingChart: any;
-}
-
 export interface Pagination {
 	page: number;
 	pageSize: number;

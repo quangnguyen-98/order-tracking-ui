@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import {
-	Button, Col, Divider, Input, Modal, Row, Select, Empty, Tag, Spin, notification
+	Button, Col, Divider, Input, Modal, Row, Select, Tag, Spin, notification
 } from "antd";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-import { formatMoney, convertCurrency } from '../../../utils/appUtils';
-import { OrderStatuses } from '../../../constants/appConstant';
-import { useAppDispatch, useAppSelector } from '../../../redux/hook';
+import { formatMoney, convertCurrency } from '~/utils/appUtils';
+
+import { OrderStatusesList, OrderStatusColor, InitialPaypalOptions, OrderStatuses } from '~/constants/appConstant';
+import { useAppDispatch, useAppSelector } from '~/redux/hook';
 import {
 	onChangeOrderFormValue, resetData, createOrder, updateOrder, updatePaymentStatus, getAllDishes, onChangeDishesSelectOption, onChangedishesQuantity
 } from './reducer';
 
-import { OrderStatusesList, OrderStatusColor, InitialPaypalOptions } from '../../../constants/appConstant';
+import { Empty } from '~/sharedComponents';
 
 const { Option } = Select;
 const { CREATED, ACCEPTED, DRIVERASSIGNED, DELIVERING, DONE, CANCELED } = OrderStatuses;
@@ -181,7 +182,6 @@ const ModalCreateEditOrder = () => {
 						setStatusSelectedOption(value);
 					}}>
 						{orderStatusOptions.map(item => (
-							// <Option key={item.value} value={item.value}><span style={{ color: 'red'}}>{item.displayName}</span></Option>
 							<Option key={item.value} value={item.value}>{getOptionStatusName(item)}</Option>
 						))}
 					</Select>
@@ -306,19 +306,13 @@ const ModalCreateEditOrder = () => {
 
 					{data.dishes.length > 0 ?
 						<Row className="text-start" justify="end" align="middle" gutter={[10, 10]}>
-							<Col span={8}><h6>Dishes Name:</h6></Col>
+							<Col span={8}><h6>Dish Name:</h6></Col>
 							<Col span={6}><h6>Price:</h6></Col>
 							<Col span={6}><h6>Quantity:</h6></Col>
 							<Col span={4}></Col>
 						</Row>
 						:
-						<Row justify={'center'} style={{ height: '30%' }}>
-							<Col>
-								<Empty
-									description={<span>Please add dishes to order</span>}
-								/>
-							</Col>
-						</Row>
+						<Empty description={'Please add dishes to order'} />
 					}
 
 					<Row className="text-end" justify="end" align="top" gutter={[10, 10]}>
@@ -364,7 +358,6 @@ const ModalCreateEditOrder = () => {
 										}} />
 								</PayPalScriptProvider>)}
 						</>)
-
 						}
 						</>}
 				</Col>
