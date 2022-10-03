@@ -94,7 +94,7 @@ export const createDish = (options: any | {}): AppThunk => async (dispatch) => {
 
 		dispatch(fetchDishes({ isShowLoading: false }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(createUpdateDishFailure(err));
 	}
 };
@@ -108,7 +108,7 @@ export const updateDish = (options: any | {}): AppThunk => async (dispatch) => {
 
 		dispatch(fetchDishes({ isShowLoading: false }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(createUpdateDishFailure(err));
 	}
 };

@@ -80,7 +80,7 @@ export const fetchOrders = (options: any | { isShowLoading: true; isAutoFetching
 		const orderData = await getOrders({ page, pageSize, sort, filter });
 		dispatch(getOrdersSuccess({ data: orderData, isAutoFetching: options.isAutoFetching }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(getOrdersFailure(err));
 	}
 };
