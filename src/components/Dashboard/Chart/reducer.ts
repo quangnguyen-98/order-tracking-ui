@@ -68,7 +68,7 @@ export const fetchDashboard = (options: any): AppThunk => async dispatch => {
 		const dashboardData = await getDashboard();
 		dispatch(getDashboardSuccess({ data: dashboardData }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(getDishesFailure(err));
 	}
 };

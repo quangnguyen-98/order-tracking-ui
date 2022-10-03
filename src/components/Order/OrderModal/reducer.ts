@@ -143,7 +143,7 @@ export const createOrder = (data: any | {}): AppThunk => async (dispatch, getSta
 
 		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
 	}
 };
@@ -157,7 +157,7 @@ export const updateOrder = (data: any | {}): AppThunk => async (dispatch) => {
 
 		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
 	}
 };
@@ -174,7 +174,7 @@ export const getAllDishes = (): AppThunk => async (dispatch, getState) => {
 		dispatch(getAllDishesSuccess({ data: dishesData }));
 
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 	}
 };
 
@@ -189,7 +189,7 @@ export const updatePaymentStatus = (): AppThunk => async (dispatch, getState) =>
 
 		dispatch(fetchOrders({ isShowLoading: false }));
 	} catch (err: any) {
-		notification.error({ message: err.response.data.message || err.message });
+		notification.error({ message: err.response?.data?.message || err.message });
 		dispatch(createUpdateOrderFailure(err));
 	}
 };
