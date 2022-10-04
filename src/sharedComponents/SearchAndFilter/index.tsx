@@ -111,7 +111,10 @@ const SearchAndFilter = (props: SearchAndFilterProps) => {
 		const { filter, searchField } = props;
 		setsearchValue(event.target.value);
 		if (!event.target.value.trim()) {
-			onSearchUsingDebounce({ ...filter });
+			const newFilter = { ...filter };
+			delete newFilter.searchField;
+			delete newFilter.searchText;
+			onSearchUsingDebounce(newFilter);
 		} else {
 			const filterParam = {
 				...filter,
