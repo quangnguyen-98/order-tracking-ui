@@ -64,7 +64,7 @@ const MainContainer: FC = () => {
 							: (<Button onClick={() => setCollapsed(!collapsed)}><i className="fas fa-caret-left"></i></Button>)}</span></Col>
 						<Col xs={18} sm={21} md={23} lg={23}>
 							<span style={{ fontWeight: 'bold' }}>
-								<span>&nbsp;<img style={{ marginBottom: '5px', marginRight: '5px' }} src="/favicon.ico" alt="favicon" width="30px" height="30px" />BAEMIN ORDER TRACKING SERVICE</span>
+								<span>&nbsp;<img style={{ marginBottom: '5px', marginRight: '5px' }} src="/favicon.ico" alt="favicon" width="30px" height="30px" />ORDER TRACKING SERVICE</span>
 							</span>
 						</Col>
 					</Row>

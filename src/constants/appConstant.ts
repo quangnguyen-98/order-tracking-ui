@@ -8,7 +8,7 @@ switch (environment) {
 		ApiEndpoint = 'http://localhost:3001/api/v1';
 		break;
 	case 'production':
-		ApiEndpoint = 'https://baemin-order-tracking-api.herokuapp.com/api/v1';
+		ApiEndpoint = 'https://order-tracking-api.herokuapp.com/api/v1';
 		break;
 
 	default:
